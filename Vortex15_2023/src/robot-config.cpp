@@ -8,10 +8,11 @@ int    DEADBAND       = 5;           //pct
 double WHEEL_TRAVEL   = 84*3.14159;  //mm
 double TRACK_WIDTH    = 290;         //mm
 double WHEEL_BASE     = 230;         //mm
-double INDEXER_GO     = 2000;         //pct
+double INDEXER_GO     = 1500;         //pct
 double INDEXER_BACK   = 200;         //ms            
 double WAIT_UNTIL_LAUNCH = 3100;     //ms
-double FLYWHEEL_VEL = 95;          //pct
+double FLYWHEEL_VEL   = 95;          //pct
+double INTAKE_VEL     = 70;          //pcd 
 
 /********* Devices definition **********/
 // Brain screen
@@ -28,7 +29,7 @@ motor_group LeftMotors = motor_group(LeftFrontMotor, LeftMiddleMotor, LeftBackMo
 motor_group RightMotors = motor_group(RightFrontMotor, RightMiddleMotor, RightBackMotor);
 
 //Intake-Roller motor
-motor intake_roller = motor(PORT7, ratio18_1, false);
+motor intake_roller = motor(PORT7, ratio18_1, true);
 
 //Flywheel motors
 motor FlywheelDown = motor(PORT8, ratio18_1, false);
@@ -90,14 +91,18 @@ int rc_auto_loop_function_Controller1()
         RightMotors.spin(forward);
       }
 
-      // TODO: Intake - roller
-      /*if(Controller1.ButtonA.pressing()) {
-        intake_roller.setVelocity(100, percent);
+      //Intake - roller
+      if(Controller1.ButtonA.pressing()) {
+        intake_roller.setVelocity(INTAKE_VEL, percent);
         intake_roller.spin(forward);
+      }
+      else if (Controller1.ButtonB.pressing()) {
+        intake_roller.setVelocity(INTAKE_VEL, percent);
+        intake_roller.spin(reverse);     
       }
       else {
         intake_roller.stop();
-      }*/
+      }
 
       // Flywheel shoot
       if (Controller1.ButtonR2.pressing()){        
@@ -112,8 +117,6 @@ int rc_auto_loop_function_Controller1()
       } else{
         Flywheel.stop();
       }
-
-      // TODO: Expansion
     }
     wait(20,msec);    
   }
