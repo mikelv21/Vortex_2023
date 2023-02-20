@@ -1,28 +1,36 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/*    Module:       robot-config.cpp                                          */
+/*    Author:       VORTEX Robotics                                           */
+/*                  For more information contact A01706424@tec.mx             */
+/*    Created:      18-feb-2023                                               */
+/*    Description:  Default header for V5 projects                            */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
 #include "vex.h"
+
 using namespace vex;
 using signature = vision::signature;
 using code = vision::code;
 
 /************ Constants ****************/
-int    DEADBAND       = 5;           //pct
-double WHEEL_TRAVEL   = 84*3.14159;  //mm
-double TRACK_WIDTH    = 290;         //mm
-double WHEEL_BASE     = 230;         //mm
-double INDEXER_GO     = 1500;         //pct
-double INDEXER_BACK   = 200;         //ms            
-double WAIT_UNTIL_LAUNCH = 3100;     //ms
-double FLYWHEEL_VEL   = 95;          //pct
-double INTAKE_VEL     = 70;          //pcd 
+const int    DEADBAND       = 5;           //pct
+const double INDEXER_GO     = 1500;        //pct
+const double INDEXER_BACK   = 400;         //ms            
+const double WAIT_UNTIL_LAUNCH = 3100;     //ms
+const double FLYWHEEL_VEL   = 69;          //pct
+const double INTAKE_VEL     = 70;          //pcd 
 
 /********* Devices definition **********/
 // Brain screen
 brain Brain;
 
-// Drivetrain motors 
-motor LeftFrontMotor = motor(PORT1, ratio18_1, false);
+// Drivetrain motors  
+motor LeftFrontMotor = motor(PORT1, ratio18_1, true);
 motor LeftMiddleMotor = motor(PORT2, ratio18_1, false);
 motor LeftBackMotor = motor(PORT3, ratio18_1, true);
-motor RightFrontMotor = motor(PORT4, ratio18_1, false);
+motor RightFrontMotor = motor(PORT4, ratio18_1, true);
 motor RightMiddleMotor = motor(PORT5, ratio18_1, false);
 motor RightBackMotor = motor(PORT6, ratio18_1, true);
 motor_group LeftMotors = motor_group(LeftFrontMotor, LeftMiddleMotor, LeftBackMotor);
@@ -66,6 +74,7 @@ int rc_auto_loop_function_Controller1()
       //Drivetrain
       int drivetrainLeftSideSpeed  = Controller1.Axis1.position() + Controller1.Axis3.position();
       int drivetrainRightSideSpeed = Controller1.Axis1.position() - Controller1.Axis3.position();
+      
       if (drivetrainLeftSideSpeed < DEADBAND && drivetrainLeftSideSpeed > -DEADBAND){
         if (DrivetrainLNeedsToBeStopped_Controller1){
           LeftMotors.stop();  
@@ -74,6 +83,7 @@ int rc_auto_loop_function_Controller1()
       } else{
         DrivetrainLNeedsToBeStopped_Controller1 = true;
       }
+
       if (drivetrainRightSideSpeed < DEADBAND && drivetrainRightSideSpeed > -DEADBAND){
         if (DrivetrainRNeedsToBeStopped_Controller1){
           RightMotors.stop();  
@@ -82,6 +92,7 @@ int rc_auto_loop_function_Controller1()
       } else{
         DrivetrainRNeedsToBeStopped_Controller1 = true;
       }
+      
       if (DrivetrainLNeedsToBeStopped_Controller1){
         LeftMotors.setVelocity(drivetrainLeftSideSpeed, percent);
         LeftMotors.spin(forward);
@@ -123,6 +134,11 @@ int rc_auto_loop_function_Controller1()
   return 0;
 }
 
-void vexcodeInit(void) {
-  // Nothing to initialize
+void vexcodeInit(void)
+{
+  Indexer.close();
+  LeftBackMotor.resetPosition();
+  RightBackMotor.resetRotation();
 }
+
+

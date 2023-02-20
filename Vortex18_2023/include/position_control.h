@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/*    Module:       main.cpp                                                  */
+/*    Module:       position_control.h                                        */
 /*    Author:       VORTEX Robotics                                           */
 /*                  For more information contact A01706424@tec.mx             */
 /*    Created:      18-feb-2023                                               */
@@ -8,31 +8,23 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#include "vex.h"
-#include "autonomous.h"
-
+#include <cmath>
 using namespace vex;
-competition Competition;
 
-// All activities that occur before the competition starts. Example: clearing encoders, setting servo positions, ...
-void pre_auton(void)
+double distanceToTarget(double x, double y, double targetX, double targetY) 
 {
-  vexcodeInit();
+  double dx = targetX - x;
+  double dy = targetY - y;
+  return std::sqrt(dx*dx + dy*dy);
 }
 
-void auton(void){
-  //  autonomous_time(20, 20, 0);
-  prueba_autonomo();
-}
-
-void usercontrol(void)
+double angleToTarget(double x, double y, double targetX, double targetY, double heading_angle) 
 {
-  rc_auto_loop_function_Controller1();
-}
-
-int main() {
-  Competition.autonomous(auton);
-  Competition.drivercontrol(usercontrol);
-  
-  pre_auton();
+  double dx = targetX - x;
+  double dy = targetY - y;
+  double targetAngle = std::atan2(dy, dx) * 180 / M_PI;
+  double angleDifference = targetAngle - heading_angle;
+  while (angleDifference > 180)  {angleDifference -= 360;}
+  while (angleDifference < -180) {angleDifference += 360;}
+  return angleDifference;
 }
