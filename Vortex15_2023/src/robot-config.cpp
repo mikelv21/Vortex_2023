@@ -5,7 +5,6 @@ using code = vision::code;
 
 /************ Constants ****************/
 int    DEADBAND       = 5;           //pct
-double WHEEL_TRAVEL   = 84*3.14159;  //mm
 double TRACK_WIDTH    = 290;         //mm
 double WHEEL_BASE     = 230;         //mm
 double INDEXER_GO     = 1500;         //pct
@@ -18,15 +17,26 @@ double INTAKE_VEL     = 70;          //pcd
 // Brain screen
 brain Brain;
 
-// Drivetrain motors 
+// Drivetrain motors  
 motor LeftFrontMotor = motor(PORT1, ratio18_1, false);
-motor LeftMiddleMotor = motor(PORT2, ratio18_1, false);
-motor LeftBackMotor = motor(PORT3, ratio18_1, true);
-motor RightFrontMotor = motor(PORT4, ratio18_1, false);
+motor LeftMiddleMotor = motor(PORT2, ratio18_1, true);
+motor LeftBackMotor = motor(PORT3, ratio18_1, false);
+
+motor RightFrontMotor = motor(PORT4, ratio18_1, true);
 motor RightMiddleMotor = motor(PORT5, ratio18_1, false);
 motor RightBackMotor = motor(PORT6, ratio18_1, true);
+
 motor_group LeftMotors = motor_group(LeftFrontMotor, LeftMiddleMotor, LeftBackMotor);
 motor_group RightMotors = motor_group(RightFrontMotor, RightMiddleMotor, RightBackMotor);
+
+distanceUnits units = distanceUnits::mm;   // Imperial measurements.
+const double WHEEL_TRAVEL = 84*M_PI;       // Circumference of the drive wheels (mm)
+double trackWidth   = 290;                 // Distance between the left and right center of wheel. (mm) 
+double gearRatio    = 2;                   // Ratio of motor rotations to wheel rotations if using gears.
+
+inertial inertialSensor(PORT16);
+
+smartdrive Drive = smartdrive(LeftMotors, RightMotors, inertialSensor, WHEEL_TRAVEL, trackWidth, WHEEL_BASE, units, gearRatio);
 
 //Intake-Roller motor
 motor intake_roller = motor(PORT7, ratio18_1, true);
@@ -124,5 +134,8 @@ int rc_auto_loop_function_Controller1()
 }
 
 void vexcodeInit(void) {
-  // Nothing to initialize
+  inertialSensor.calibrate();
+  while (inertialSensor.isCalibrating()) {
+    wait(25, msec);
+  }
 }

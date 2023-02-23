@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/*    Module:       position_control.h                                        */
+/*    Module:       autonomous.h                                              */
 /*    Author:       VORTEX Robotics                                           */
 /*                  For more information contact A01706424@tec.mx             */
 /*    Created:      18-feb-2023                                               */
@@ -9,22 +9,13 @@
 /*----------------------------------------------------------------------------*/
 
 #include <cmath>
+#include "robot-config.h"
 using namespace vex;
 
-double distanceToTarget(double x, double y, double targetX, double targetY) 
-{
-  double dx = targetX - x;
-  double dy = targetY - y;
-  return std::sqrt(dx*dx + dy*dy);
-}
+// Set up devices and constants
+extern brain Brain;
 
-double angleToTarget(double x, double y, double targetX, double targetY, double heading_angle) 
-{
-  double dx = targetX - x;
-  double dy = targetY - y;
-  double targetAngle = std::atan2(dy, dx) * 180 / M_PI;
-  double angleDifference = targetAngle - heading_angle;
-  while (angleDifference > 180)  {angleDifference -= 360;}
-  while (angleDifference < -180) {angleDifference += 360;}
-  return angleDifference;
+//-------------------------------------------------------------------------
+void prueba_autonomo(){
+  Drive.turnToHeading(-90, deg, 70, velocityUnits::pct);
 }

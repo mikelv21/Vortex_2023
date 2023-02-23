@@ -24,6 +24,7 @@ extern motor RightMiddleMotor;
 extern motor RightBackMotor;
 extern motor_group LeftMotors;
 extern motor_group RightMotors;
+extern smartdrive Drive;
 
 //Inertial sensor
 extern inertial inertialSensor;
@@ -48,5 +49,4 @@ extern controller Controller1;
 //Main functions
 extern int rc_auto_loop_function_Controller1();
 extern void vexcodeInit(void);
-
 

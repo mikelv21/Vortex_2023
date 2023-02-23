@@ -15,7 +15,7 @@ using signature = vision::signature;
 using code = vision::code;
 
 /************ Constants ****************/
-const int    DEADBAND       = 5;           //pct
+const int    DEADBAND       = 10;          //pct
 const double INDEXER_GO     = 1500;        //pct
 const double INDEXER_BACK   = 400;         //ms            
 const double WAIT_UNTIL_LAUNCH = 3100;     //ms
@@ -27,14 +27,27 @@ const double INTAKE_VEL     = 70;          //pcd
 brain Brain;
 
 // Drivetrain motors  
-motor LeftFrontMotor = motor(PORT1, ratio18_1, true);
-motor LeftMiddleMotor = motor(PORT2, ratio18_1, false);
-motor LeftBackMotor = motor(PORT3, ratio18_1, true);
+motor LeftFrontMotor = motor(PORT1, ratio18_1, false);
+motor LeftMiddleMotor = motor(PORT2, ratio18_1, true);
+motor LeftBackMotor = motor(PORT3, ratio18_1, false);
+
 motor RightFrontMotor = motor(PORT4, ratio18_1, true);
 motor RightMiddleMotor = motor(PORT5, ratio18_1, false);
 motor RightBackMotor = motor(PORT6, ratio18_1, true);
+
 motor_group LeftMotors = motor_group(LeftFrontMotor, LeftMiddleMotor, LeftBackMotor);
 motor_group RightMotors = motor_group(RightFrontMotor, RightMiddleMotor, RightBackMotor);
+
+distanceUnits units = distanceUnits::mm;   // Imperial measurements.
+const double WHEEL_TRAVEL   = 84*M_PI;     // Circumference of the drive wheels (mm)
+double trackWidth   = 290;                 // Distance between the left and right center of wheel. (mm) 
+double wheelBase    = 230;                 // Distince between the center of the front and back axle. (mm)
+double gearRatio    = 2;                   // Ratio of motor rotations to wheel rotations if using gears.
+
+inertial inertialSensor(PORT16);
+
+smartdrive Drive = smartdrive(RightMotors, LeftMotors, inertialSensor, WHEEL_TRAVEL, trackWidth, wheelBase, units, gearRatio);
+
 
 //Intake-Roller motor
 motor intake_roller = motor(PORT7, ratio18_1, true);
@@ -55,25 +68,15 @@ bool RemoteControlCodeEnabled = true;
 bool DrivetrainLNeedsToBeStopped_Controller1 = true;
 bool DrivetrainRNeedsToBeStopped_Controller1 = true;
 
-/************   Atomic functions   ************/
-/* TODO: Split main user controller code into smaller functions
-void compute_chassis_vel(void){}
-void drivetrain_run(void){}
-void intake_roller_run(void){} 
-void flywheel_game_shoot(void){} 
-void expansion_run(void){}
-*/
-
 // Main user controller code
 int rc_auto_loop_function_Controller1()
 {
   while(true)
   {
-    if(RemoteControlCodeEnabled)
-    {
-      //Drivetrain
-      int drivetrainLeftSideSpeed  = Controller1.Axis1.position() + Controller1.Axis3.position();
-      int drivetrainRightSideSpeed = Controller1.Axis1.position() - Controller1.Axis3.position();
+    if(RemoteControlCodeEnabled){
+      //Smartdrive
+      int drivetrainLeftSideSpeed  = Controller1.Axis3.position() - Controller1.Axis1.position();
+      int drivetrainRightSideSpeed = Controller1.Axis3.position() + Controller1.Axis1.position();
       
       if (drivetrainLeftSideSpeed < DEADBAND && drivetrainLeftSideSpeed > -DEADBAND){
         if (DrivetrainLNeedsToBeStopped_Controller1){
@@ -102,16 +105,13 @@ int rc_auto_loop_function_Controller1()
         RightMotors.spin(forward);
       }
 
+
       //Intake - roller
       if(Controller1.ButtonA.pressing()) {
         intake_roller.setVelocity(INTAKE_VEL, percent);
         intake_roller.spin(forward);
       }
       else if (Controller1.ButtonB.pressing()) {
-        intake_roller.setVelocity(INTAKE_VEL, percent);
-        intake_roller.spin(reverse);     
-      }
-      else {
         intake_roller.stop();
       }
 
@@ -134,11 +134,12 @@ int rc_auto_loop_function_Controller1()
   return 0;
 }
 
-void vexcodeInit(void)
-{
+void vexcodeInit(void){
+  inertialSensor.calibrate();
+  while (inertialSensor.isCalibrating()) {
+    wait(25, msec);
+  }
   Indexer.close();
-  LeftBackMotor.resetPosition();
-  RightBackMotor.resetRotation();
 }
 
 
