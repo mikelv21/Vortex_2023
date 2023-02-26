@@ -14,7 +14,7 @@
 using namespace vex;
 competition Competition;
 
-void display_info(){
+void display_info_static(){
   // Display Left Motors
   Brain.Screen.clearScreen();
   Brain.Screen.setCursor(1, 1);
@@ -45,13 +45,31 @@ void display_info(){
   Brain.Screen.print("Heading: ");
 }
 
+void display_info_dinamic(){
+  Brain.Screen.setCursor(3, 10);
+  Brain.Screen.print(LeftFrontMotor.temperature(celsius));
+  Brain.Screen.setCursor(4, 10);
+  Brain.Screen.print(LeftMiddleMotor.temperature(celsius));
+  Brain.Screen.setCursor(5, 10);
+  Brain.Screen.print(LeftBackMotor.temperature(celsius));
+
+  Brain.Screen.setCursor(3, 36);
+  Brain.Screen.print(RightFrontMotor.temperature(celsius));
+  Brain.Screen.setCursor(4, 36);
+  Brain.Screen.print(RightMiddleMotor.temperature(celsius));
+  Brain.Screen.setCursor(5, 36);
+  Brain.Screen.print(RightBackMotor.temperature(celsius));
+
+  Brain.Screen.setCursor(7, 10);
+  Brain.Screen.print(inertialSensor.heading());
+}
+
 // All activities that occur before the competition starts. Example: clearing encoders, setting servo positions, ...
 void pre_auton(void){
   vexcodeInit();
 }
 
 void auton(void){
-  //  autonomous_time(20, 20, 0);
   prueba_autonomo();
 }
 
@@ -60,28 +78,13 @@ void usercontrol(void){
 }
 
 int main() {
-  // pre_auton();
+  pre_auton();
   Competition.autonomous(auton);
-  // Competition.drivercontrol(usercontrol);
+  Competition.drivercontrol(usercontrol);
 
-  display_info();  
+  display_info_static();  
 
   while(true){
-    Brain.Screen.setCursor(3, 10);
-    Brain.Screen.print(LeftFrontMotor.temperature(celsius));
-    Brain.Screen.setCursor(4, 10);
-    Brain.Screen.print(LeftMiddleMotor.temperature(celsius));
-    Brain.Screen.setCursor(5, 10);
-    Brain.Screen.print(LeftBackMotor.temperature(celsius));
-
-    Brain.Screen.setCursor(3, 36);
-    Brain.Screen.print(RightFrontMotor.temperature(celsius));
-    Brain.Screen.setCursor(4, 36);
-    Brain.Screen.print(RightMiddleMotor.temperature(celsius));
-    Brain.Screen.setCursor(5, 36);
-    Brain.Screen.print(RightBackMotor.temperature(celsius));
-
-    Brain.Screen.setCursor(7, 10);
-    Brain.Screen.print(inertialSensor.heading());
+    display_info_dinamic();
   }
 }

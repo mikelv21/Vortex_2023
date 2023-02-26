@@ -20,7 +20,8 @@ const double INDEXER_GO     = 1500;        //pct
 const double INDEXER_BACK   = 400;         //ms            
 const double WAIT_UNTIL_LAUNCH = 3100;     //ms
 const double FLYWHEEL_VEL   = 69;          //pct
-const double INTAKE_VEL     = 70;          //pcd 
+const double INTAKE_VEL     = 70;          //pcd
+const double EXPANSOR_DEG   = 40;          //deg 
 
 /********* Devices definition **********/
 // Brain screen
@@ -39,15 +40,19 @@ motor_group LeftMotors = motor_group(LeftFrontMotor, LeftMiddleMotor, LeftBackMo
 motor_group RightMotors = motor_group(RightFrontMotor, RightMiddleMotor, RightBackMotor);
 
 distanceUnits units = distanceUnits::mm;   // Imperial measurements.
-const double WHEEL_TRAVEL   = 84*M_PI;     // Circumference of the drive wheels (mm)
+const double WHEEL_TRAVEL   = 84*M_PI;     // Circumference of the drive wheels. (mm)
 double trackWidth   = 290;                 // Distance between the left and right center of wheel. (mm) 
 double wheelBase    = 230;                 // Distince between the center of the front and back axle. (mm)
-double gearRatio    = 2;                   // Ratio of motor rotations to wheel rotations if using gears.
+double gearRatio    = 2;                   // Ratio of motor rotations to wheel rotations if using gears. (mm)
 
 inertial inertialSensor(PORT16);
 
 smartdrive Drive = smartdrive(RightMotors, LeftMotors, inertialSensor, WHEEL_TRAVEL, trackWidth, wheelBase, units, gearRatio);
 
+//Expansor motors
+motor expansor1 = motor(PORT11, ratio18_1, false);
+motor expansor2 = motor(PORT12, ratio18_1, false);
+motor_group expansor = motor_group(expansor1, expansor2);
 
 //Intake-Roller motor
 motor intake_roller = motor(PORT7, ratio18_1, true);
@@ -128,6 +133,14 @@ int rc_auto_loop_function_Controller1()
       } else{
         Flywheel.stop();
       }
+
+      // Expansor shoot
+      if(Controller1.ButtonX.pressing()){
+        expansor.spinToPosition(EXPANSOR_DEG, rotationUnits::deg);
+      } else{
+        expansor.stop();
+      }
+
     }
     wait(20,msec);    
   }
