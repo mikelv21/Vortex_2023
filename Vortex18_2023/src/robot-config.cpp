@@ -51,14 +51,14 @@ smartdrive Drive = smartdrive(RightMotors, LeftMotors, inertialSensor, WHEEL_TRA
 
 //Expansor motors
 motor expansor1 = motor(PORT11, ratio18_1, false);
-motor expansor2 = motor(PORT12, ratio18_1, false);
+motor expansor2 = motor(PORT12, ratio18_1, true);
 motor_group expansor = motor_group(expansor1, expansor2);
 
 //Intake-Roller motor
 motor intake_roller = motor(PORT7, ratio18_1, true);
 
 //Flywheel motors
-motor FlywheelDown = motor(PORT8, ratio18_1, false);
+motor FlywheelDown = motor(PORT8, ratio18_1, true);
 motor FlywheelUp = motor(PORT9, ratio18_1, true);
 motor_group Flywheel = motor_group(FlywheelDown, FlywheelUp);
 
@@ -74,10 +74,8 @@ bool DrivetrainLNeedsToBeStopped_Controller1 = true;
 bool DrivetrainRNeedsToBeStopped_Controller1 = true;
 
 // Main user controller code
-int rc_auto_loop_function_Controller1()
-{
-  while(true)
-  {
+int rc_auto_loop_function_Controller1(){
+  while(true){
     if(RemoteControlCodeEnabled){
       //Smartdrive
       int drivetrainLeftSideSpeed  = Controller1.Axis3.position() - Controller1.Axis1.position();
@@ -110,7 +108,6 @@ int rc_auto_loop_function_Controller1()
         RightMotors.spin(forward);
       }
 
-
       //Intake - roller
       if(Controller1.ButtonA.pressing()) {
         intake_roller.setVelocity(INTAKE_VEL, percent);
@@ -138,7 +135,7 @@ int rc_auto_loop_function_Controller1()
       if(Controller1.ButtonX.pressing()){
         expansor.spinToPosition(EXPANSOR_DEG, rotationUnits::deg);
       } else{
-        expansor.stop();
+        expansor.stop(brakeType::brake);
       }
 
     }

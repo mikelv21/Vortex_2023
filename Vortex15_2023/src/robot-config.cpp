@@ -14,10 +14,11 @@ double TRACK_WIDTH    = 290;         //mm
 double WHEEL_BASE     = 230;         //mm
 double INDEXER_GO     = 1500;        //pct
 double INDEXER_BACK   = 200;         //ms
-double WAIT_UNTIL_LAUNCH = 3100;     //ms
-double FLYWHEEL_VEL   = 90;          //pct
+double WAIT_UNTIL_LAUNCH = 200;     //ms
+double FLYWHEEL_VEL   = 100;         //pct
 double INTAKE_VEL     = 70;          //pcd 
 double EXPANSOR_DEG   = 40;          //deg
+int band = 0;
 
 // Drivetrain motors  
 motor LeftFrontMotor = motor(PORT1, ratio18_1, true);
@@ -120,10 +121,12 @@ int rc_auto_loop_function_Controller1(){
       }
 
       // Flywheel shoot
-      if (Controller1.ButtonR2.pressing()){        
+      if (Controller1.ButtonL2.pressing()){        
         Flywheel.spin(forward, FLYWHEEL_VEL, velocityUnits::pct);
-        wait(WAIT_UNTIL_LAUNCH, msec);
-        for (int i = 0; i<3; i++){
+        do{
+          wait(WAIT_UNTIL_LAUNCH, msec);
+        } while (band == 1);
+        if (Controller1.ButtonR2.pressing()){
           Indexer.open();
           wait(INDEXER_BACK, msec);
           Indexer.close();
@@ -133,11 +136,11 @@ int rc_auto_loop_function_Controller1(){
         Flywheel.stop();
       }
 
-     // Expansor shoot
+      // Expansor shoot
       if(Controller1.ButtonX.pressing()){
         expansor.spinToPosition(EXPANSOR_DEG, rotationUnits::deg);
       } else{
-        expansor.stop();
+        expansor.stop(brakeType::hold);
       }
 
     }

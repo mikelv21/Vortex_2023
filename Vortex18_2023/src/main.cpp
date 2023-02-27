@@ -82,9 +82,12 @@ int main() {
   Competition.autonomous(auton);
   Competition.drivercontrol(usercontrol);
 
-  display_info_static();  
+  /*
+  display_info_static();
 
-  while(true){
+  while(1){
     display_info_dinamic();
   }
+  */
+
 }
