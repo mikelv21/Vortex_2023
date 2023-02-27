@@ -13,6 +13,15 @@ extern motor RightMiddleMotor;
 extern motor RightBackMotor;
 extern motor_group LeftMotors;
 extern motor_group RightMotors;
+extern smartdrive Drive;
+
+//Inertial sensor
+extern inertial inertialSensor;
+
+//Expansor
+extern motor expasor1;
+extern motor expansor2; 
+extern motor_group expansor;
 
 //Intake-roller
 extern motor intake_roller;

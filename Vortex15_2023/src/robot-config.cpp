@@ -1,32 +1,50 @@
 #include "vex.h"
+
 using namespace vex;
 using signature = vision::signature;
 using code = vision::code;
-
-/************ Constants ****************/
-int    DEADBAND       = 5;           //pct
-double WHEEL_TRAVEL   = 84*3.14159;  //mm
-double TRACK_WIDTH    = 290;         //mm
-double WHEEL_BASE     = 230;         //mm
-double INDEXER_GO     = 1500;         //pct
-double INDEXER_BACK   = 200;         //ms            
-double WAIT_UNTIL_LAUNCH = 3100;     //ms
-double FLYWHEEL_VEL   = 95;          //pct
-double INTAKE_VEL     = 70;          //pcd 
 
 /********* Devices definition **********/
 // Brain screen
 brain Brain;
 
-// Drivetrain motors 
-motor LeftFrontMotor = motor(PORT1, ratio18_1, false);
+/************ Constants ****************/
+int    DEADBAND       = 5;           //pct
+double TRACK_WIDTH    = 290;         //mm
+double WHEEL_BASE     = 230;         //mm
+double INDEXER_GO     = 1500;        //pct
+double INDEXER_BACK   = 200;         //ms
+double WAIT_UNTIL_LAUNCH = 200;     //ms
+double FLYWHEEL_VEL   = 100;         //pct
+double INTAKE_VEL     = 70;          //pcd 
+double EXPANSOR_DEG   = 40;          //deg
+int band = 0;
+
+// Drivetrain motors  
+motor LeftFrontMotor = motor(PORT1, ratio18_1, true);
 motor LeftMiddleMotor = motor(PORT2, ratio18_1, false);
 motor LeftBackMotor = motor(PORT3, ratio18_1, true);
+
 motor RightFrontMotor = motor(PORT4, ratio18_1, false);
-motor RightMiddleMotor = motor(PORT5, ratio18_1, false);
-motor RightBackMotor = motor(PORT6, ratio18_1, true);
+motor RightMiddleMotor = motor(PORT5, ratio18_1, true);
+motor RightBackMotor = motor(PORT6, ratio18_1, false);
+
 motor_group LeftMotors = motor_group(LeftFrontMotor, LeftMiddleMotor, LeftBackMotor);
 motor_group RightMotors = motor_group(RightFrontMotor, RightMiddleMotor, RightBackMotor);
+
+distanceUnits units = distanceUnits::mm;   // Imperial measurements.
+const double WHEEL_TRAVEL = 84*M_PI;       // Circumference of the drive wheels (mm)
+double trackWidth   = 290;                 // Distance between the left and right center of wheel. (mm) 
+double gearRatio    = 2;                   // Ratio of motor rotations to wheel rotations if using gears.
+
+inertial inertialSensor(PORT16);
+
+smartdrive Drive = smartdrive(LeftMotors, RightMotors, inertialSensor, WHEEL_TRAVEL, trackWidth, WHEEL_BASE, units, gearRatio);
+
+//Expansor motors
+motor expansor1 = motor(PORT11, ratio18_1, false);
+motor expansor2 = motor(PORT12, ratio18_1, false);
+motor_group expansor = motor_group(expansor1, expansor2);
 
 //Intake-Roller motor
 motor intake_roller = motor(PORT7, ratio18_1, true);
@@ -57,15 +75,13 @@ void expansion_run(void){}
 */
 
 // Main user controller code
-int rc_auto_loop_function_Controller1()
-{
-  while(true)
-  {
-    if(RemoteControlCodeEnabled)
-    {
-      //Drivetrain
-      int drivetrainLeftSideSpeed  = Controller1.Axis1.position() + Controller1.Axis3.position();
-      int drivetrainRightSideSpeed = Controller1.Axis1.position() - Controller1.Axis3.position();
+int rc_auto_loop_function_Controller1(){
+  while(true){
+    if(RemoteControlCodeEnabled){
+      //Smartdrive
+      int drivetrainLeftSideSpeed  = Controller1.Axis3.position() - Controller1.Axis1.position();
+      int drivetrainRightSideSpeed = Controller1.Axis3.position() + Controller1.Axis1.position();
+
       if (drivetrainLeftSideSpeed < DEADBAND && drivetrainLeftSideSpeed > -DEADBAND){
         if (DrivetrainLNeedsToBeStopped_Controller1){
           LeftMotors.stop();  
@@ -105,10 +121,12 @@ int rc_auto_loop_function_Controller1()
       }
 
       // Flywheel shoot
-      if (Controller1.ButtonR2.pressing()){        
+      if (Controller1.ButtonL2.pressing()){        
         Flywheel.spin(forward, FLYWHEEL_VEL, velocityUnits::pct);
-        wait(WAIT_UNTIL_LAUNCH, msec);
-        for (int i = 0; i<3; i++){
+        do{
+          wait(WAIT_UNTIL_LAUNCH, msec);
+        } while (band == 1);
+        if (Controller1.ButtonR2.pressing()){
           Indexer.open();
           wait(INDEXER_BACK, msec);
           Indexer.close();
@@ -117,6 +135,14 @@ int rc_auto_loop_function_Controller1()
       } else{
         Flywheel.stop();
       }
+
+      // Expansor shoot
+      if(Controller1.ButtonX.pressing()){
+        expansor.spinToPosition(EXPANSOR_DEG, rotationUnits::deg);
+      } else{
+        expansor.stop(brakeType::hold);
+      }
+
     }
     wait(20,msec);    
   }
@@ -124,5 +150,8 @@ int rc_auto_loop_function_Controller1()
 }
 
 void vexcodeInit(void) {
-  // Nothing to initialize
+  inertialSensor.calibrate();
+  while (inertialSensor.isCalibrating()) {
+    wait(25, msec);
+  }
 }

@@ -24,12 +24,11 @@ const double FLYWHEEL_VEL   = 69;          //pct
 const double INTAKE_VEL     = 70;          //pcd 
 
 //-------------------------------------------------------------------------
-
 void shoot_disc(int vel, int t,  int n, int t1, int t2, timeUnits x){
   /* 
-  Shoot the disc collected with a given velocity (vel)
-  and wait a t time to activate the indexer and make n 
-  throws and keep it open a t1 time and t2 close.
+  Shoot the disc collected with a given velocity (vel) in percentage
+  and wait a t time to activate the indexer and make n throws and 
+  keep it open a t1 time and t2 close.
   */
   Flywheel.spin(forward, vel, velocityUnits::pct);
   wait(t, x);
@@ -45,7 +44,7 @@ void shoot_disc(int vel, int t,  int n, int t1, int t2, timeUnits x){
 void activate_intake(double vel, int n, timeUnits t){
   /* 
   Activate intake and roller for a given time n
-  and with a given velocity vel
+  and with a given velocity vel in percentage.
   */
   intake_roller.setVelocity(vel, percent);
   intake_roller.spin(forward);
@@ -53,34 +52,21 @@ void activate_intake(double vel, int n, timeUnits t){
   intake_roller.stop();
 }
 
-
-void prueba_autonomo(){ 
-  /* Step 1 */  
-  // Move a little bit
-  Drive.turnToHeading(-15, deg, 70, velocityUnits::pct);
-  // Throw discs
-  shoot_disc(FLYWHEEL_VEL, WAIT_UNTIL_LAUNCH, 2, INDEXER_BACK, INDEXER_GO, msec);
-  Flywheel.stop();
-  // Go back to it's first position
-  Drive.turnToHeading(15, deg, 70, velocityUnits::pct);
-
-  /* Step 2 */  
-  // Go for a discs
-  intake_roller.setVelocity(INTAKE_VEL, percent);
-  intake_roller.spin(forward);
-  Drive.driveFor(directionType::fwd, 10, distanceUnits::cm, 80, velocityUnits::pct);
-  Drive.turnToHeading(45, deg, 70, velocityUnits::pct);
-  Drive.driveFor(directionType::fwd, 30, distanceUnits::cm, 80, velocityUnits::pct);
-  wait(1000, msec);
-  intake_roller.stop();
-  Drive.turnToHeading(-90, deg, 70, velocityUnits::pct);
-  // Shoot the discs
-  shoot_disc(FLYWHEEL_VEL, WAIT_UNTIL_LAUNCH, 3, INDEXER_BACK, INDEXER_GO, msec);
-  
-  /* Step 3 */  
+void prueba_autonomo(){
+  /* Step 1 */
   // Go to the roller
-  Drive.turnToHeading(-90, deg, 70, velocityUnits::pct);
-  Drive.driveFor(directionType::fwd, 50, distanceUnits::cm, 80, velocityUnits::pct);
-  Drive.turnToHeading(-45, deg, 70, velocityUnits::pct);
-  activate_intake(INTAKE_VEL, 2000, msec);
+  Drive.driveFor(directionType::rev, 5, distanceUnits::cm, 70, velocityUnits::pct);
+  // Move the roller
+  activate_intake(90, 1000, msec);
+
+  /* Step 2 */
+  // Go to throw discs
+  Drive.driveFor(directionType::fwd, 30, distanceUnits::cm, 70, velocityUnits::pct);
+  // Turn to the basket
+  Drive.turnToHeading(2, deg, 70, velocityUnits::pct);
+  // Shoot the discs
+  shoot_disc(FLYWHEEL_VEL, WAIT_UNTIL_LAUNCH, 2, INDEXER_BACK, INDEXER_GO, msec);
+
+  /* Step 3 */
+  // ...
 }
