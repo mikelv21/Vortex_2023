@@ -15,13 +15,14 @@ using signature = vision::signature;
 using code = vision::code;
 
 /************ Constants ****************/
-const int    DEADBAND       = 10;          //pct
-const double INDEXER_GO     = 1500;        //pct
-const double INDEXER_BACK   = 400;         //ms            
-const double WAIT_UNTIL_LAUNCH = 3100;     //ms
-const double FLYWHEEL_VEL   = 69;          //pct
-const double INTAKE_VEL     = 70;          //pcd
-const double EXPANSOR_DEG   = 40;          //deg 
+int    DEADBAND       = 5;           //pct
+double INDEXER_GO     = 1500;        //pct
+double INDEXER_BACK   = 200;         //ms
+double WAIT_UNTIL_LAUNCH = 200;     //ms
+double FLYWHEEL_VEL   = 100;         //pct
+double INTAKE_VEL     = 70;          //pcd 
+double EXPANSOR_DEG   = 40;          //deg
+int band = 0;
 
 /********* Devices definition **********/
 // Brain screen
@@ -40,7 +41,7 @@ motor_group LeftMotors = motor_group(LeftFrontMotor, LeftMiddleMotor, LeftBackMo
 motor_group RightMotors = motor_group(RightFrontMotor, RightMiddleMotor, RightBackMotor);
 
 distanceUnits units = distanceUnits::mm;   // Imperial measurements.
-const double WHEEL_TRAVEL   = 84*M_PI;     // Circumference of the drive wheels. (mm)
+const double WHEEL_TRAVEL = 84*M_PI;       // Circumference of the drive wheels (mm)
 double trackWidth   = 290;                 // Distance between the left and right center of wheel. (mm) 
 double wheelBase    = 230;                 // Distince between the center of the front and back axle. (mm)
 double gearRatio    = 2;                   // Ratio of motor rotations to wheel rotations if using gears. (mm)
@@ -114,14 +115,20 @@ int rc_auto_loop_function_Controller1(){
         intake_roller.spin(forward);
       }
       else if (Controller1.ButtonB.pressing()) {
+        intake_roller.setVelocity(INTAKE_VEL, percent);
+        intake_roller.spin(reverse);
+      }
+      else{
         intake_roller.stop();
       }
 
       // Flywheel shoot
-      if (Controller1.ButtonR2.pressing()){        
+      if (Controller1.ButtonL2.pressing()){        
         Flywheel.spin(forward, FLYWHEEL_VEL, velocityUnits::pct);
-        wait(WAIT_UNTIL_LAUNCH, msec);
-        for (int i = 0; i<3; i++){
+        do{
+          wait(WAIT_UNTIL_LAUNCH, msec);
+        } while (band == 1);
+        if (Controller1.ButtonR2.pressing()){
           Indexer.open();
           wait(INDEXER_BACK, msec);
           Indexer.close();
