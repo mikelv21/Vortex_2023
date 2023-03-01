@@ -5,17 +5,18 @@ using signature = vision::signature;
 using code = vision::code;
 
 /********* Devices definition **********/
+//In this file we declare every single component that the robot uses.
 // Brain screen
 brain Brain;
 
 /************ Constants ****************/
-int    DEADBAND       = 5;           //pct
+int    DEADBAND       = 10;           //pct
 double TRACK_WIDTH    = 290;         //mm
 double WHEEL_BASE     = 230;         //mm
 double INDEXER_GO     = 1500;        //pct
 double INDEXER_BACK   = 200;         //ms
 double WAIT_UNTIL_LAUNCH = 200;     //ms
-double FLYWHEEL_VEL   = 100;         //pct
+double FLYWHEEL_VEL   = 55;         //pct
 double INTAKE_VEL     = 70;          //pcd 
 double EXPANSOR_DEG   = 40;          //deg
 int band = 0;

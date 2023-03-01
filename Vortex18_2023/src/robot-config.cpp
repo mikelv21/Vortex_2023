@@ -15,11 +15,11 @@ using signature = vision::signature;
 using code = vision::code;
 
 /************ Constants ****************/
-int    DEADBAND       = 5;           //pct
+int    DEADBAND       = 10;          //pct
 double INDEXER_GO     = 1500;        //pct
 double INDEXER_BACK   = 200;         //ms
-double WAIT_UNTIL_LAUNCH = 200;     //ms
-double FLYWHEEL_VEL   = 100;         //pct
+double WAIT_UNTIL_LAUNCH = 200;      //ms
+double FLYWHEEL_VEL   = 55;         //pct
 double INTAKE_VEL     = 70;          //pcd 
 double EXPANSOR_DEG   = 40;          //deg
 int band = 0;
@@ -114,11 +114,11 @@ int rc_auto_loop_function_Controller1(){
         intake_roller.setVelocity(INTAKE_VEL, percent);
         intake_roller.spin(forward);
       }
-      else if (Controller1.ButtonB.pressing()) {
+      else if (Controller1.ButtonL1.pressing()) {
         intake_roller.setVelocity(INTAKE_VEL, percent);
         intake_roller.spin(reverse);
       }
-      else{
+      else if (Controller1.ButtonB.pressing()){
         intake_roller.stop();
       }
 
@@ -158,5 +158,3 @@ void vexcodeInit(void){
   }
   Indexer.close();
 }
-
-

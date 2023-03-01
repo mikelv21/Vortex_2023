@@ -8,7 +8,6 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-
 using namespace vex;
 
 /*****************  VEXcode devices *******************/
@@ -54,4 +53,3 @@ extern controller Controller1;
 //Main functions
 extern int rc_auto_loop_function_Controller1();
 extern void vexcodeInit(void);
-

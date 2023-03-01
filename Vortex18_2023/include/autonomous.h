@@ -17,10 +17,10 @@ extern brain Brain;
 
 /************ Constants ****************/
 const int    DEADBAND       = 10;          //pct
-const double INDEXER_GO     = 1500;        //pct
-const double INDEXER_BACK   = 400;         //ms            
-const double WAIT_UNTIL_LAUNCH = 5000;     //ms
-const double INTAKE_VEL     = 70;          //pcd 
+const double INDEXER_GO     = 1700;        //pct
+const double INDEXER_BACK   = 800;         //ms            
+const double WAIT_UNTIL_LAUNCH = 5500;     //ms
+const double INTAKE_VEL     = 80;          //pcd 
 
 //-------------------------------------------------------------------------
 
@@ -52,45 +52,29 @@ void activate_intake(double vel, int n, timeUnits t){
   and with a given velocity vel
   */
   intake_roller.setVelocity(vel, percent);
-  intake_roller.spin(forward);
+  intake_roller.spin(reverse);
   wait(n, t);
   intake_roller.stop();
 }
 
 
 void prueba_autonomo(){
-  /* Step 1 */  
-  // Move a little bit
-  Drive.driveFor(fwd, 30, distanceUnits::cm, 60, velocityUnits::pct);
-  Drive.turnToHeading(30, rotationUnits::deg, 30, velocityUnits::pct);
+  /* Step 1 */
   // Throw discs
-  shoot_disc(95, WAIT_UNTIL_LAUNCH, 2, INDEXER_BACK, INDEXER_GO, msec);
-  // Turn to discs direction
-  reset_turnH(-20, 30);
-  reset_turnH(180, 50);
-
-  /* Step 2 */  
-  // Go for a discs
+  Drive.driveFor(directionType::rev, 40, distanceUnits::cm, 35, velocityUnits::pct);
   intake_roller.setVelocity(INTAKE_VEL, percent);
   intake_roller.spin(forward);
-  Drive.driveFor(directionType::rev, 40, distanceUnits::cm, 60, velocityUnits::pct);
-  reset_turnH(-40, 20);
-  Drive.driveFor(directionType::rev, 40, distanceUnits::cm, 60, velocityUnits::pct);
-  wait(1000, msec);
-  Drive.driveFor(directionType::rev, 30, distanceUnits::cm, 60, velocityUnits::pct);
-  wait(2500, msec);
+  Drive.driveFor(directionType::rev, 10, distanceUnits::cm, 30, velocityUnits::pct);
+  Drive.turnToHeading(-153, rotationUnits::deg, 10, velocityUnits::pct);  //-145 -> -150 -> -151 -> (battery 100%)
   intake_roller.stop();
-  Drive.driveFor(directionType::fwd, 10, distanceUnits::cm, 20, velocityUnits::pct);
-  reset_turnH(-85, 50);
-  // Shoot the discs
-  shoot_disc(80, WAIT_UNTIL_LAUNCH, 3, INDEXER_BACK, INDEXER_GO, msec);
-  
-  /* Step 3 */  
+  Drive.driveFor(directionType::fwd, 3, distanceUnits::cm, 30, velocityUnits::pct);
+  shoot_disc(83, WAIT_UNTIL_LAUNCH, 3, INDEXER_BACK, INDEXER_GO, msec);
+
+  /* Step 2 */
   // Go to the roller
-  Drive.driveFor(directionType::rev, 10, distanceUnits::cm, 20, velocityUnits::pct);
-  reset_turnH(-90, 50);
-  Drive.driveFor(directionType::rev, 70, distanceUnits::cm, 70, velocityUnits::pct);
-  reset_turnH(90, 50);
-  //Drive.turnToHeading(-45, deg, 5, velocityUnits::pct);
-  //activate_intake(INTAKE_VEL, 2000, msec);
+  reset_turnH(-75, 10); //-70 -> -68 -> -72
+  Drive.driveFor(directionType::rev, 90, distanceUnits::cm, 35, velocityUnits::pct);
+  reset_turnH(37, 5);   //35 -> 38 -> 
+  Drive.driveFor(directionType::rev, 32, distanceUnits::cm, 30, velocityUnits::pct);
+  activate_intake(INTAKE_VEL, 2000, msec);
 }
