@@ -10,15 +10,15 @@ using code = vision::code;
 brain Brain;
 
 /************ Constants ****************/
-int    DEADBAND       = 10;           //pct
-double TRACK_WIDTH    = 290;         //mm
-double WHEEL_BASE     = 230;         //mm
-double INDEXER_GO     = 1500;        //pct
-double INDEXER_BACK   = 200;         //ms
+int    DEADBAND       = 10;         //pct
+double TRACK_WIDTH    = 290;        //mm
+double WHEEL_BASE     = 230;        //mm
+double INDEXER_GO     = 450;       //pct
+double INDEXER_BACK   = 180;        //ms
 double WAIT_UNTIL_LAUNCH = 200;     //ms
-double FLYWHEEL_VEL   = 55;         //pct
-double INTAKE_VEL     = 70;          //pcd 
-double EXPANSOR_DEG   = 40;          //deg
+double FLYWHEEL_VEL   = 58.33;      //pct 55 -> 60 -> 58 -> 59 -> 58.33 -> 56 -> 57 -> 50 -> 53
+double INTAKE_VEL     = 70;         //pcd 
+double EXPANSOR_DEG   = 40;         //deg
 int band = 0;
 
 // Drivetrain motors  
