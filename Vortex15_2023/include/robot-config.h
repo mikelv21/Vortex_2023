@@ -19,7 +19,7 @@ extern smartdrive Drive;
 extern inertial inertialSensor;
 
 //Expansor
-extern motor expasor1;
+extern motor expansor1;
 extern motor expansor2; 
 extern motor_group expansor;
 

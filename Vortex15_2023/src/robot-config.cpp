@@ -5,19 +5,20 @@ using signature = vision::signature;
 using code = vision::code;
 
 /********* Devices definition **********/
+//In this file we declare every single component that the robot uses.
 // Brain screen
 brain Brain;
 
 /************ Constants ****************/
-int    DEADBAND       = 5;           //pct
-double TRACK_WIDTH    = 290;         //mm
-double WHEEL_BASE     = 230;         //mm
-double INDEXER_GO     = 1500;        //pct
-double INDEXER_BACK   = 200;         //ms
+int    DEADBAND       = 10;         //pct
+double TRACK_WIDTH    = 290;        //mm
+double WHEEL_BASE     = 230;        //mm
+double INDEXER_GO     = 450;       //pct
+double INDEXER_BACK   = 180;        //ms
 double WAIT_UNTIL_LAUNCH = 200;     //ms
-double FLYWHEEL_VEL   = 100;         //pct
-double INTAKE_VEL     = 70;          //pcd 
-double EXPANSOR_DEG   = 40;          //deg
+double FLYWHEEL_VEL   = 58.33;      //pct 55 -> 60 -> 58 -> 59 -> 58.33 -> 56 -> 57 -> 50 -> 53
+double INTAKE_VEL     = 70;         //pcd 
+double EXPANSOR_DEG   = 40;         //deg
 int band = 0;
 
 // Drivetrain motors  
@@ -35,11 +36,11 @@ motor_group RightMotors = motor_group(RightFrontMotor, RightMiddleMotor, RightBa
 distanceUnits units = distanceUnits::mm;   // Imperial measurements.
 const double WHEEL_TRAVEL = 84*M_PI;       // Circumference of the drive wheels (mm)
 double trackWidth   = 290;                 // Distance between the left and right center of wheel. (mm) 
-double gearRatio    = 2;                   // Ratio of motor rotations to wheel rotations if using gears.
+double gearRatio    = 1;                   // Ratio of motor rotations to wheel rotations if using gears.
 
 inertial inertialSensor(PORT16);
 
-smartdrive Drive = smartdrive(LeftMotors, RightMotors, inertialSensor, WHEEL_TRAVEL, trackWidth, WHEEL_BASE, units, gearRatio);
+smartdrive Drive = smartdrive(RightMotors, LeftMotors, inertialSensor, WHEEL_TRAVEL, trackWidth, WHEEL_BASE, units, gearRatio);
 
 //Expansor motors
 motor expansor1 = motor(PORT11, ratio18_1, false);
@@ -64,15 +65,6 @@ bool RemoteControlCodeEnabled = true;
 /************* Control variables ***************/
 bool DrivetrainLNeedsToBeStopped_Controller1 = true;
 bool DrivetrainRNeedsToBeStopped_Controller1 = true;
-
-/************   Atomic functions   ************/
-/* TODO: Split main user controller code into smaller functions
-void compute_chassis_vel(void){}
-void drivetrain_run(void){}
-void intake_roller_run(void){} 
-void flywheel_game_shoot(void){} 
-void expansion_run(void){}
-*/
 
 // Main user controller code
 int rc_auto_loop_function_Controller1(){
@@ -138,7 +130,7 @@ int rc_auto_loop_function_Controller1(){
 
       // Expansor shoot
       if(Controller1.ButtonX.pressing()){
-        expansor.spinToPosition(EXPANSOR_DEG, rotationUnits::deg);
+        expansor.spinToPosition(EXPANSOR_DEG, rotationUnits::deg, 50, velocityUnits::pct);
       } else{
         expansor.stop(brakeType::hold);
       }
@@ -154,4 +146,6 @@ void vexcodeInit(void) {
   while (inertialSensor.isCalibrating()) {
     wait(25, msec);
   }
+  wait(50, msec);
+  Brain.Screen.clearScreen();
 }
