@@ -1,13 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/*    Module:       robot-config.h                                            */
-/*    Author:       VORTEX Robotics                                           */
-/*                  For more information contact A01706424@tec.mx             */
-/*    Created:      18-feb-2023                                               */
-/*    Description:  Default header for V5 projects                            */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
 using namespace vex;
 
 /*****************  VEXcode devices *******************/
@@ -29,7 +19,7 @@ extern smartdrive Drive;
 extern inertial inertialSensor;
 
 //Expansor
-extern motor expasor1;
+extern motor expansor1;
 extern motor expansor2; 
 extern motor_group expansor;
 
@@ -52,4 +42,4 @@ extern controller Controller1;
 
 //Main functions
 extern int rc_auto_loop_function_Controller1();
-extern void vexcodeInit(void);
+void vexcodeInit(void);

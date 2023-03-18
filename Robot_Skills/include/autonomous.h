@@ -46,13 +46,13 @@ void reset_turnH(int d, int vel){
   Drive.turnToHeading(d, deg, vel, velocityUnits::pct);
 }
 
-void activate_intake(double vel, int n, timeUnits t){
+void activate_intake(double vel, int n, timeUnits t, directionType xd){
   /* 
   Activate intake and roller for a given time n
   and with a given velocity vel
   */
   intake_roller.setVelocity(vel, percent);
-  intake_roller.spin(reverse);
+  intake_roller.spin(xd);
   wait(n, t);
   intake_roller.stop();
 }
@@ -67,22 +67,24 @@ void prueba_autonomo(){
   Drive.driveFor(directionType::rev, 8, distanceUnits::cm, 30, velocityUnits::pct);
   wait(2800, msec);
   intake_roller.stop();
-  Drive.turnToHeading(-154, rotationUnits::deg, 10, velocityUnits::pct);  //-145 -> -150 -> -151 -> -153 -> -155
+  Drive.turnToHeading(-154, rotationUnits::deg, 20, velocityUnits::pct);  //-145 -> -150 -> -151 -> -153 -> -155
   Drive.driveFor(directionType::fwd, 3, distanceUnits::cm, 30, velocityUnits::pct);
   shoot_disc(70.5, WAIT_UNTIL_LAUNCH, 3, INDEXER_BACK, INDEXER_GO, msec); //83 -> 81 -> 79 -> 75 -> 72
 
   /* Step 2 */
   // Go to the roller
   Drive.driveFor(directionType::rev, 40, distanceUnits::cm, 30, velocityUnits::pct);
-  reset_turnH(-90, 10);
+  reset_turnH(-90, 20);
   Drive.driveFor(directionType::rev, 95, distanceUnits::cm, 40, velocityUnits::pct); // 90 -> 
-  reset_turnH(85, 10); // 100 -> 80 -> 85 -> 
-  Drive.driveFor(directionType::rev, 20, distanceUnits::cm, 30, velocityUnits::pct); // 15 -> 
-  activate_intake(INTAKE_VEL, 1000, msec);
+  reset_turnH(85, 20); // 100 -> 80 -> 85 -> 
+  Drive.driveFor(directionType::rev, 19, distanceUnits::cm, 30, velocityUnits::pct); // 15 -> 
+  activate_intake(INTAKE_VEL, 2000, msec, reverse);
 
-  //reset_turnH(-75, 10); //-70 -> -68 -> -72
-  //Drive.driveFor(directionType::rev, 95, distanceUnits::cm, 40, velocityUnits::pct); // 90 ->  
-  //reset_turnH(47, 5);   //35 -> 38 -> 37 -> 40 -> 45 ->  
-  //Drive.driveFor(directionType::rev, 27, distanceUnits::cm, 30, velocityUnits::pct); // 32 -> 25 -> 21 -> 23 -> 25
-  //activate_intake(INTAKE_VEL, 1000, msec);
+  /* Step 3 */
+  // Go to the roller 2 
+  Drive.driveFor(directionType::fwd, 50, distanceUnits::cm, 30, velocityUnits::pct);
+  reset_turnH(-100, 20);
+  Drive.driveFor(directionType::rev, 73, distanceUnits::cm, 30, velocityUnits::pct); // 70 -> 
+  activate_intake(INTAKE_VEL, 1000, msec, reverse);
+
 }

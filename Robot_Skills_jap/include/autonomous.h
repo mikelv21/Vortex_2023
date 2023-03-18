@@ -16,10 +16,10 @@ extern brain Brain;
 
 /************ Constants ****************/
 const int    DEADBAND       = 10;         //pct
-const double INDEXER_GO     = 1700;       //ms
-const double INDEXER_BACK   = 1000;       //ms            
-const double WAIT_UNTIL_LAUNCH = 6000;    //ms
-const double INTAKE_VEL     = 70;         //pcd 
+const double INDEXER_GO     = 1500;       //ms
+const double INDEXER_BACK   = 800;        //ms            
+const double WAIT_UNTIL_LAUNCH = 4500;    //ms
+const double INTAKE_VEL     = 80;         //pcd 
 
 //-------------------------------------------------------------------------
 void shoot_disc(int vel, int t,  int n, int t1, int t2, timeUnits x){
@@ -58,31 +58,40 @@ void activate_intake(double vel, int n, timeUnits t){
 void prueba_autonomo(){
   /* Step 1 */
   // Go to the roller
-  Drive.driveFor(directionType::rev, 5, distanceUnits::cm, 20, velocityUnits::pct);
+  Drive.driveFor(directionType::rev, 3, distanceUnits::cm, 20, velocityUnits::pct);
   // Move the roller
-  activate_intake(90, 1700, msec);  // 1000 -> 1500 -> 
+  activate_intake(90, 2000, msec);  // 1000 -> 1500 -> 
 
   /* Step 2 */
   // Go to throw discs
   Drive.driveFor(directionType::fwd, 13, distanceUnits::cm, 20, velocityUnits::pct);  // 10 -> 
   // Turn to the basket
-  Drive.turnToHeading(-5.5, rotationUnits::deg, 5, velocityUnits::pct); // -11 -> -5 -> 
+  Drive.turnToHeading(-5.5, rotationUnits::deg, 10, velocityUnits::pct); // -11 -> -5 -> 
   // Shoot the discs
-  shoot_disc(95, WAIT_UNTIL_LAUNCH, 2, INDEXER_BACK, INDEXER_GO, msec);  // 100 -> 90 -> 92 -> 
+  shoot_disc(90, WAIT_UNTIL_LAUNCH, 2, INDEXER_BACK, INDEXER_GO, msec);  // 100 -> 90 -> 92 -> 90 -> 
 
   /* Step 3 */
   // Go for the rest of discs
-  Drive.driveFor(directionType::rev, 4.5, distanceUnits::cm, 10, velocityUnits::pct);  // 3 -> 5 -> 
+  Drive.driveFor(directionType::rev, 4.5, distanceUnits::cm, 30, velocityUnits::pct);  // 3 -> 5 -> 
   reset_turnH(-104, 10); // -101 -> -105 -> 
   Drive.driveFor(directionType::rev, 52, distanceUnits::cm, 78, velocityUnits::pct); // 20 -> 50 -> 85 -> 80 -> 75 ->
   Drive.driveFor(directionType::fwd, 10, distanceUnits::cm, 30, velocityUnits::pct); // 5 -> 
   intake_roller.setVelocity(95, percent);
   intake_roller.spin(forward);
-  Drive.driveFor(directionType::rev, 50, distanceUnits::cm, 25, velocityUnits::pct); // 60 -> 30 -> 40 -> 
+  Drive.driveFor(directionType::rev, 50, distanceUnits::cm, 40, velocityUnits::pct); // 60 -> 30 -> 40 -> 
   wait(7000, msec);
   intake_roller.stop();
-  reset_turnH(80, 10);  // 60 -> 75 -> 90 -> 110 -> 
-  Drive.driveFor(directionType::fwd, 15, distanceUnits::cm, 20, velocityUnits::pct); // 
+  reset_turnH(80, 20);  // 60 -> 75 -> 90 -> 110 -> 
+  Drive.driveFor(directionType::fwd, 15, distanceUnits::cm, 30, velocityUnits::pct); // 
   // Shoot the discs
-  shoot_disc(97, WAIT_UNTIL_LAUNCH, 3, INDEXER_BACK, INDEXER_GO, msec); // 100 -> 90 -> 
+  shoot_disc(95, WAIT_UNTIL_LAUNCH, 3, INDEXER_BACK, INDEXER_GO, msec); // 100 -> 90 -> 97 -> 
+
+  /*Step 4 */
+  // Go for roller 2
+  reset_turnH(-95, 20); 
+  Drive.driveFor(directionType::fwd, 50, distanceUnits::cm, 40, velocityUnits::pct); // 
+  reset_turnH(-110, 20); 
+  Drive.driveFor(directionType::rev, 150, distanceUnits::cm, 50, velocityUnits::pct); // 
+  activate_intake(90, 1700, msec);  // 1000 -> 1500 -> 
+
 }
