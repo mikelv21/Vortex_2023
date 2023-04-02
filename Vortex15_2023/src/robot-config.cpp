@@ -13,23 +13,24 @@ brain Brain;
 int    DEADBAND       = 10;         //pct
 double TRACK_WIDTH    = 290;        //mm
 double WHEEL_BASE     = 230;        //mm
-double INDEXER_GO     = 450;       //pct
+double INDEXER_GO     = 450;        //pct
 double INDEXER_BACK   = 180;        //ms
 double WAIT_UNTIL_LAUNCH = 200;     //ms
-double FLYWHEEL_VEL   = 58.33;      //pct 55 -> 60 -> 58 -> 59 -> 58.33 -> 56 -> 57 -> 50 -> 53
-double INTAKE_VEL     = 70;         //pcd 
+double FLYWHEEL_VEL   = 50;         //pct 60 ->  55 -> 
+double MAX_FLYWHEEL_VEL = 70;       //pct 100 -> 80 -> 
+double INTAKE_VEL     = 85;         //pcd 70 -> 
 double EXPANSOR_DEG   = 40;         //deg
 int band = 0;
 
 
 // Drivetrain motors  
-motor LeftFrontMotor = motor(PORT1, ratio18_1, true);
-motor LeftMiddleMotor = motor(PORT2, ratio18_1, false);
-motor LeftBackMotor = motor(PORT3, ratio18_1, true);
+motor LeftFrontMotor = motor(PORT1, ratio18_1, false);
+motor LeftMiddleMotor = motor(PORT2, ratio18_1, true);
+motor LeftBackMotor = motor(PORT3, ratio18_1, false);
 
-motor RightFrontMotor = motor(PORT4, ratio18_1, false);
-motor RightMiddleMotor = motor(PORT5, ratio18_1, true);
-motor RightBackMotor = motor(PORT6, ratio18_1, false);
+motor RightFrontMotor = motor(PORT4, ratio18_1, true);
+motor RightMiddleMotor = motor(PORT5, ratio18_1, false);
+motor RightBackMotor = motor(PORT6, ratio18_1, true);
 
 motor_group LeftMotors = motor_group(LeftFrontMotor, LeftMiddleMotor, LeftBackMotor);
 motor_group RightMotors = motor_group(RightFrontMotor, RightMiddleMotor, RightBackMotor);
@@ -72,8 +73,8 @@ int rc_auto_loop_function_Controller1(){
   while(true){
     if(RemoteControlCodeEnabled){
       //Smartdrive
-      int drivetrainLeftSideSpeed  = Controller1.Axis3.position() - Controller1.Axis1.position();
-      int drivetrainRightSideSpeed = Controller1.Axis3.position() + Controller1.Axis1.position();
+      int drivetrainLeftSideSpeed  = Controller1.Axis3.position() + Controller1.Axis1.position();
+      int drivetrainRightSideSpeed = Controller1.Axis3.position() - Controller1.Axis1.position();
 
       if (drivetrainLeftSideSpeed < DEADBAND && drivetrainLeftSideSpeed > -DEADBAND){
         if (DrivetrainLNeedsToBeStopped_Controller1){
@@ -115,17 +116,20 @@ int rc_auto_loop_function_Controller1(){
 
       // Flywheel shoot
       if (Controller1.ButtonL2.pressing()){
-        Flywheel.spin(forward, FLYWHEEL_VEL, velocityUnits::pct);
-        // do{
-        //   wait(WAIT_UNTIL_LAUNCH, msec);
-        // } while (band == 1);
+        if (Controller1.ButtonUp.pressing()) {
+          Flywheel.spin(forward, MAX_FLYWHEEL_VEL, velocityUnits::pct);
+        } 
+        else {
+          Flywheel.spin(forward, FLYWHEEL_VEL, velocityUnits::pct);
+        }
         if (Controller1.ButtonR2.pressing()){
           Indexer.open();
           wait(INDEXER_BACK, msec);
           Indexer.close();
           wait(INDEXER_GO, msec);
         }
-      } else{
+      } 
+      else{
         Flywheel.stop();
       }
 
