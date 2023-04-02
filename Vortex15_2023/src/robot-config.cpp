@@ -21,6 +21,7 @@ double INTAKE_VEL     = 70;         //pcd
 double EXPANSOR_DEG   = 40;         //deg
 int band = 0;
 
+
 // Drivetrain motors  
 motor LeftFrontMotor = motor(PORT1, ratio18_1, true);
 motor LeftMiddleMotor = motor(PORT2, ratio18_1, false);
@@ -51,12 +52,12 @@ motor_group expansor = motor_group(expansor1, expansor2);
 motor intake_roller = motor(PORT7, ratio18_1, true);
 
 //Flywheel motors
-motor FlywheelDown = motor(PORT8, ratio18_1, false);
-motor FlywheelUp = motor(PORT9, ratio18_1, true);
+motor FlywheelDown = motor(PORT18, ratio18_1, true);
+motor FlywheelUp = motor(PORT19, ratio18_1, true);
 motor_group Flywheel = motor_group(FlywheelDown, FlywheelUp);
 
 // Indexer piston
-pneumatics Indexer = pneumatics(Brain.ThreeWirePort.A);
+pneumatics Indexer = pneumatics(Brain.ThreeWirePort.D);
 
 // Controller
 controller Controller1 = controller(primary);
@@ -113,11 +114,11 @@ int rc_auto_loop_function_Controller1(){
       }
 
       // Flywheel shoot
-      if (Controller1.ButtonL2.pressing()){        
+      if (Controller1.ButtonL2.pressing()){
         Flywheel.spin(forward, FLYWHEEL_VEL, velocityUnits::pct);
-        do{
-          wait(WAIT_UNTIL_LAUNCH, msec);
-        } while (band == 1);
+        // do{
+        //   wait(WAIT_UNTIL_LAUNCH, msec);
+        // } while (band == 1);
         if (Controller1.ButtonR2.pressing()){
           Indexer.open();
           wait(INDEXER_BACK, msec);

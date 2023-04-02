@@ -19,7 +19,7 @@ int    DEADBAND       = 10;          //pct
 double INDEXER_GO     = 460;         //pct 1500 -> 
 double INDEXER_BACK   = 180;         //ms  200 -> 
 double WAIT_UNTIL_LAUNCH = 100;      //ms
-double FLYWHEEL_VEL   = 54;          //pct 55 -> 56 -> 
+double FLYWHEEL_VEL   = 69;          //pct 100 -> 70 -> 65 -> 
 double INTAKE_VEL     = 85;          //pcd 70 -> 
 double EXPANSOR_DEG   = 40;          //deg
 int band = 0;
@@ -56,7 +56,9 @@ motor expansor2 = motor(PORT12, ratio18_1, true);
 motor_group expansor = motor_group(expansor1, expansor2);
 
 //Intake-Roller motor
-motor intake_roller = motor(PORT7, ratio18_1, true);
+motor intake_roller1 = motor(PORT7, ratio18_1, true);
+motor intake_roller2 = motor(PORT10, ratio18_1, true);
+motor_group intake_roller = motor_group(intake_roller1, intake_roller2);
 
 //Flywheel motors
 motor FlywheelDown = motor(PORT8, ratio18_1, true);
@@ -109,7 +111,7 @@ int rc_auto_loop_function_Controller1(){
         RightMotors.spin(forward);
       }
 
-      //Intake - roller
+      // Intake - roller
       // Use button A
       if(Controller1.ButtonA.pressing()) {
         intake_roller.setVelocity(INTAKE_VEL, percent);

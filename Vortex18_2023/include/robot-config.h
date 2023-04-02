@@ -34,7 +34,9 @@ extern motor expansor2;
 extern motor_group expansor;
 
 //Intake-roller
-extern motor intake_roller;
+extern motor intake_roller1;
+extern motor intake_roller2;
+extern motor_group intake_roller;
 
 //Indexer
 extern pneumatics Indexer;
@@ -43,9 +45,6 @@ extern pneumatics Indexer;
 extern motor FlywheelDown;
 extern motor FlywheelUp;
 extern motor_group Flywheel;
-
-//Expansion
-extern motor Expansion;
 
 //Controller
 extern controller Controller1;
