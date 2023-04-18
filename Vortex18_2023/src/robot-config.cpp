@@ -20,9 +20,9 @@ double INDEXER_GO     = 460;         //pct 1500 ->
 double INDEXER_BACK   = 180;         //ms  200 -> 
 double WAIT_UNTIL_LAUNCH = 100;      //ms
 double FLYWHEEL_VEL   = 69;          //pct 100 -> 70 -> 65 -> 
+double MAX_FLYWHEEL_VEL = 80;        //pct 
 double INTAKE_VEL     = 85;          //pcd 70 -> 
 double EXPANSOR_DEG   = 40;          //deg
-int band = 0;
 
 /********* Devices definition **********/
 // Brain screen
@@ -130,9 +130,13 @@ int rc_auto_loop_function_Controller1(){
       // Use button L2
       if (Controller1.ButtonL2.pressing()){        
         Flywheel.spin(forward, FLYWHEEL_VEL, velocityUnits::pct);
-        do{
-          wait(WAIT_UNTIL_LAUNCH, msec);
-        } while (band == 1);
+        // Use button UP
+        if (Controller1.ButtonUp.pressing()) {
+          Flywheel.spin(forward, MAX_FLYWHEEL_VEL, velocityUnits::pct);
+        } 
+        else {
+          Flywheel.spin(forward, FLYWHEEL_VEL, velocityUnits::pct);
+        }
         // Use button R2
         if (Controller1.ButtonR2.pressing()){
           Indexer.open();
