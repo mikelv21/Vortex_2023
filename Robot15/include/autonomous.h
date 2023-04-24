@@ -26,9 +26,8 @@ void auton(){
   move_to_coordinate(0, -3, 0);  // Go to the roller
   activate_intake(360, 90);      // Move the roller 
   /* Step 2 */
-  move_to_coordinate(0, 10, 0);  // Go to throw discs
-  Drivetrain.turnToHeading(-4, rotationUnits::deg, 3, velocityUnits::pct);  // Turn to the basket
-  shoot_disc(74, WAIT_UNTIL_LAUNCH, 2, INDEXER_BACK, INDEXER_GO);           // Shoot the discs 
+  //move_to_coordinate(0, 10, -4);  // Go to throw discs
+  // shoot_disc(74, WAIT_UNTIL_LAUNCH, 2, INDEXER_BACK, INDEXER_GO);           // Shoot the discs 
   /* Step 3
   Drivetrain.driveFor(directionType::rev, 4.5, distanceUnits::cm, 10, velocityUnits::pct); // Go for the rest of discs
   reset_turnH(-104, 30); 

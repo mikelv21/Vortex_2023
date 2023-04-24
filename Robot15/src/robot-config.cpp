@@ -26,7 +26,7 @@ motor RightFrontMotor = motor(PORT6, ratio18_1, false);
 motor RightMiddleMotor = motor(PORT5, ratio18_1, true);
 motor RightBackMotor = motor(PORT4, ratio18_1, false);
 motor_group RightDriveSmart = motor_group(RightFrontMotor, RightMiddleMotor, RightBackMotor);
-inertial DrivetrainInertial = inertial(PORT16);
+inertial DrivetrainInertial = inertial(PORT17);
 smartdrive Drivetrain = smartdrive(LeftDriveSmart, RightDriveSmart, DrivetrainInertial, 299.24, 320, 40, mm, 0.5);
 
 // Set Flywheel
@@ -38,10 +38,13 @@ motor_group Flywheel = motor_group(FlywheelDown, FlywheelUp);
 motor Expansor = motor(PORT11, ratio18_1, false);
 
 // Set Intake and roller
-motor Intake_roller = motor(PORT7, ratio18_1, false);
+// Intake-roller
+motor Intake_roller_A = motor(PORT7, ratio18_1, false);
+motor Intake_roller_B = motor(PORT12, ratio18_1, true);
+motor_group Intake_roller = motor_group(Intake_roller_A, Intake_roller_B);
 
 // Set pneumatic indexer
-pneumatics Indexer = pneumatics(Brain.ThreeWirePort.D);
+pneumatics Indexer = pneumatics(Brain.ThreeWirePort.H);
 
 // VEXcode generated functions
 int threshold = 10;

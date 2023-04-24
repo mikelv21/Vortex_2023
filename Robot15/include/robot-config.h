@@ -19,7 +19,7 @@ extern motor FlywheelUp;
 extern motor_group Flywheel;
 
 extern motor Expansor;
-extern motor Intake_roller;
+extern motor_group Intake_roller;
 extern pneumatics Indexer;
 
 /* Used to initialize code/tasks/devices added using tools in VEXcode Pro.
