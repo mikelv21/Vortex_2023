@@ -19,7 +19,7 @@ void auton(){
   shot_two_disks();
   //go_for_three_stack();
   //shot_three_disks();
-  //go _for_three_square();
+  //go_for_three_square();
 }
 
 //------- Aux function filling -------//
@@ -114,7 +114,6 @@ void go_for_three_square(){
                       distanceUnits::cm, 
                       100, 
                       velocityUnits::pct);
-
   Drivetrain.stop(hold);
 }
 
