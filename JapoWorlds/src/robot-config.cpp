@@ -41,7 +41,8 @@ bool DrivetrainLNeedsToBeStopped_Controller1 = true;
 bool DrivetrainRNeedsToBeStopped_Controller1 = true;
 
 int rc_auto_loop_function_Controller1() {
-
+  
+  //task my_Task(flywheelTask, 15);
   while(true) {
     if(RemoteControlCodeEnabled) {
       chassis_control();
@@ -92,7 +93,6 @@ int flywheelTask() {
     if(isFlywheelRunning) {
       Flywheel.spin(directionType::fwd, CONTROL_FLYWHEEL_VEL, velocityUnits::pct);
     }
-    task::sleep(5);
   }
   return 0;
 }
@@ -100,6 +100,7 @@ int flywheelTask() {
 void flywheel_control(){
   if(Controller1.ButtonL2.pressing() && isFlywheelRunning == false ) {
     isFlywheelRunning = true;
+    Flywheel.spin(directionType::fwd, CONTROL_FLYWHEEL_VEL, voltageUnits::mV);
     wait(500, msec);
   } 
   else if( Controller1.ButtonL2.pressing() && isFlywheelRunning == true) {

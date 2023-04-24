@@ -49,7 +49,7 @@ const double WAIT_UNTIL_LAUNCH   = 2500;    //ms
 
 //------------------ User control -------------------//
 const double JOYSTICK_DEADBAND    = 5;
-const double CONTROL_FLYWHEEL_VEL = 57;    
+const double CONTROL_FLYWHEEL_VEL = 11000;  //max 12000  (mV, milivolts)  
 const double INTAKE_VEL           = 85;
 const double EXPANSOR_DEG         = -90;
 const double EXPANSOR_LAUNCH_VEL  = 95;
