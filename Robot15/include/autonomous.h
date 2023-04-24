@@ -7,6 +7,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include <iostream>
+#include "utils.h"
 #include "robot-config.h"
 using namespace vex;
 
@@ -18,42 +19,16 @@ const double INDEXER_GO        = 1200;     //ms
 const double INDEXER_BACK      = 1000;     //ms            
 const double WAIT_UNTIL_LAUNCH = 2000;     //ms  3000 -> 5000 -> 
 
-//-------------------------------------------------------------------------
-void shoot_disc(double vel, int t,  int n, int t1, int t2){
-  /* Shoot the disc collected with a given velocity (vel) in percentage
-   * and wait a t time to activate the indexer and make n throws and 
-   * keep it open a t1 time and t2 close. */
-  for (int i = 0; i<n; i++){
-    Flywheel.spin(forward, vel, velocityUnits::pct);
-    wait(t, msec);
-    Indexer.open();
-    wait(t1, msec);
-    Indexer.close();
-    wait(t2, msec);
-    t = 0;
-    vel = vel - 6;
-  }
-  Flywheel.stop(brakeType::coast);
-}
-
-void reset_turnH(int d, int vel){
-  DrivetrainInertial.calibrate();
-  Drivetrain.turnToHeading(d, deg, vel, velocityUnits::pct);
-}
-
-void activate_intake(double rot, double vel){
-  /* Activate intake and roller motors to move certain degrees with specific velocity */
-  Intake_roller.spinFor(forward, rot, rotationUnits::deg, vel, velocityUnits::pct);
-}
 
 void auton(){
   /* Step 1 */
-  Drivetrain.driveFor(directionType::rev, 3, distanceUnits::cm, 15, velocityUnits::pct);  // Go to the roller
-  activate_intake(360, 90);  // Move the roller 
+  Drivetrain.setDriveVelocity(20, velocityUnits::pct);
+  move_to_coordinate(0, -3, 0);  // Go to the roller
+  activate_intake(360, 90);      // Move the roller 
   /* Step 2 */
-  Drivetrain.driveFor(directionType::fwd, 10, distanceUnits::cm, 20, velocityUnits::pct);  // Go to throw discs
+  move_to_coordinate(0, 10, 0);  // Go to throw discs
   Drivetrain.turnToHeading(-4, rotationUnits::deg, 3, velocityUnits::pct);  // Turn to the basket
-  shoot_disc(74, WAIT_UNTIL_LAUNCH, 2, INDEXER_BACK, INDEXER_GO);  // Shoot the discs 
+  shoot_disc(74, WAIT_UNTIL_LAUNCH, 2, INDEXER_BACK, INDEXER_GO);           // Shoot the discs 
   /* Step 3
   Drivetrain.driveFor(directionType::rev, 4.5, distanceUnits::cm, 10, velocityUnits::pct); // Go for the rest of discs
   reset_turnH(-104, 30); 
@@ -66,7 +41,6 @@ void auton(){
   Drivetrain.driveFor(directionType::fwd, 15, distanceUnits::cm, 20, velocityUnits::pct);  // Move closer to the basket
   shoot_disc(75, WAIT_UNTIL_LAUNCH, 3, INDEXER_BACK, INDEXER_GO);  // Shoot the discs  */
 }
-
 
 void skills(){
   auton();

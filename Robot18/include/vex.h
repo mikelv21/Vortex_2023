@@ -1,13 +1,11 @@
 /*----------------------------------------------------------------------------*/
-/*                                                                            */
 /*    Module:       vex.h                                                     */
-/*    Author:       VORTEX Robotics                                           */
-/*                  For more information contact A01706424@tec.mx             */
-/*    Created:      18-feb-2023                                               */
+/*    Author:       Vex Robotics                                              */
+/*    Created:      1 Feb 2019                                                */
 /*    Description:  Default header for V5 projects                            */
-/*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+#include <cmath>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>

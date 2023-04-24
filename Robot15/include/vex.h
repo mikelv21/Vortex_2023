@@ -12,6 +12,7 @@
 
 #include "v5.h"
 #include "v5_vcs.h"
+#include "vex_task.h"
 
 #include "robot-config.h"
 

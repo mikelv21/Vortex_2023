@@ -14,7 +14,6 @@ extern motor RightMiddleMotor;
 extern motor RightBackMotor;
 extern inertial DrivetrainInertial;
 
-
 extern motor FlywheelDown;
 extern motor FlywheelUp;
 extern motor_group Flywheel;

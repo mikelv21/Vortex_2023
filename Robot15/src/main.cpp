@@ -44,71 +44,8 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 /*                              User Control Task                            */
 /*---------------------------------------------------------------------------*/
-
 void usercontrol(void) {
   rc_auto_loop_function_Controller1();
-  /*
-  int Flywheel_flag = 0;
-  int FLYWHEEL_VEL = 60; 
-  int EXPANSOR_DEG = -90;
-
-  double turnImportance = 0.3;   // How much turning slows down the speed of forward, 0 doesn't affect, 1 stops forward
-  double turnSensitivity = 0.8;  // How sensitive a turn is, 0 doesn't turn, 1 most sensitive
-  LeftFrontMotor.setStopping(brakeType::coast);
-  LeftMiddleMotor.setStopping(brakeType::coast);
-  LeftBackMotor.setStopping(brakeType::coast);
-
-  RightFrontMotor.setStopping(brakeType::coast);
-  RightMiddleMotor.setStopping(brakeType::coast);
-  RightBackMotor.setStopping(brakeType::coast);
-  Expansor.setStopping(brakeType::hold);
-
-  while(true){
-    // DRIVETRAIN
-    double turnn = Controller1.Axis1.position(percent);
-    double move = Controller1.Axis3.position(percent);
-
-    double turn_volts = turnSensitivity * (turnn * 0.12);
-    double move_volts = move * 0.12 * (1.0 - std::abs((turn_volts / 12.0) * turnImportance));
-
-    LeftFrontMotor.spin(forward, move_volts + turn_volts, volt);
-    LeftMiddleMotor.spin(forward, move_volts + turn_volts, volt);
-    LeftBackMotor.spin(forward, move_volts + turn_volts, volt);
-
-    RightFrontMotor.spin(forward, move_volts - turn_volts, volt);
-    RightMiddleMotor.spin(forward, move_volts - turn_volts, volt);
-    RightBackMotor.spin(forward, move_volts - turn_volts, volt);
-
-    // INTAKE & ROLLER
-    if (Controller1.ButtonA.pressing()){
-      Intake_roller.spin(forward, 10, volt);
-    } else if (Controller1.ButtonB.pressing()) {
-      Intake_roller.spin(reverse, 12, volt);
-    } else Intake_roller.stop();
-
-    // FLYWHEEL
-    if (Controller1.ButtonL2.pressing() && Flywheel_flag == 0) {
-      Flywheel.spin(forward, FLYWHEEL_VEL, velocityUnits::pct);
-      Flywheel_flag = 1;
-      wait(400, msec);
-    } else if (Controller1.ButtonL2.pressing() && Flywheel_flag == 1) {
-      Flywheel.stop();
-      Flywheel_flag = 0;
-      wait(400, msec);
-    }
-
-    // INDEXER
-    if (Controller1.ButtonR2.pressing()) { Indexer.set(true); }
-    else { Indexer.set(false); }
-
-    // EXPANSOR
-    if (Controller1.ButtonX.pressing()) {
-      Expansor.spinToPosition(EXPANSOR_DEG, rotationUnits::deg, 50, velocityUnits::pct);
-    } else { Expansor.stop(brakeType::hold); }
-
-    wait(20, msec);
-  } 
-  */
 }
 
 

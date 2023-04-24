@@ -1,4 +1,5 @@
 #include "vex.h"
+#include "vex_task.h"
 
 using namespace vex;
 using signature = vision::signature;
@@ -8,9 +9,9 @@ using code = vision::code;
 brain  Brain;
 
 // Constants
-double INTAKE_VEL     = 95;         // pcd: 70  -> 85 -> 
-double FLYWHEEL_VEL   = 50;         // pct: 60  -> 55 -> 
-double EXPANSOR_DEG   = -90;        // deg: -50 -> 70 -> 
+double INTAKE_VEL   = 95;     // pcd: 70  -> 85 -> 
+double FLYWHEEL_VEL = 10000;  // mv: 10000 -> 
+double EXPANSOR_DEG = -90;    // deg: -50 -> 70 -> 
 
 // VEXcode device constructors
 // Set controller
@@ -43,16 +44,28 @@ motor Intake_roller = motor(PORT7, ratio18_1, false);
 pneumatics Indexer = pneumatics(Brain.ThreeWirePort.D);
 
 // VEXcode generated functions
+int threshold = 10;
+
 // define variable for remote controller enable/disable
 bool RemoteControlCodeEnabled = true;
 // define variables used for controlling motors based on controller inputs
-int Flywheel_flag = 0;
 bool DrivetrainLNeedsToBeStopped_Controller1 = true;
 bool DrivetrainRNeedsToBeStopped_Controller1 = true;
 
 
+bool isFlywheelRunning = false;
+int Flywheeltask(){
+  while(true){
+    if(isFlywheelRunning){
+      Flywheel.spin(fwd, FLYWHEEL_VEL, voltageUnits::mV);
+    }
+    task::sleep(10);
+  }
+}
+
 // define a task that will handle monitoring inputs from Controller1
 int rc_auto_loop_function_Controller1() {
+  task Fly_task(Flywheeltask, 15);
   // process the controller input every 20 milliseconds & update the motors based on the input values
   while(true) {
     if(RemoteControlCodeEnabled) {
@@ -61,7 +74,7 @@ int rc_auto_loop_function_Controller1() {
       // left = Axis3 + Axis1 | right = Axis3 - Axis1
       int drivetrainLeftSideSpeed = Controller1.Axis3.position() + Controller1.Axis1.position();
       int drivetrainRightSideSpeed = Controller1.Axis3.position() - Controller1.Axis1.position();
-      if (drivetrainLeftSideSpeed < 5 && drivetrainLeftSideSpeed > -5) {  // check if the value is inside of the deadband range
+      if (drivetrainLeftSideSpeed < threshold && drivetrainLeftSideSpeed > -threshold) {  // check if the value is inside of the deadband range
         if (DrivetrainLNeedsToBeStopped_Controller1) {      // check if the left motor has already been stopped
           LeftDriveSmart.stop();                            // stop the left drive motor
           DrivetrainLNeedsToBeStopped_Controller1 = false;  // tell the code that the left motor has been stopped
@@ -69,7 +82,7 @@ int rc_auto_loop_function_Controller1() {
       } 
       // reset the toggle so that the deadband code knows to stop the left motor nexttime the input is in the deadband range
       else { DrivetrainLNeedsToBeStopped_Controller1 = true; }
-      if (drivetrainRightSideSpeed < 5 && drivetrainRightSideSpeed > -5) {  // check if the value is inside of the deadband range
+      if (drivetrainRightSideSpeed < threshold && drivetrainRightSideSpeed > -threshold) {  // check if the value is inside of the deadband range
         if (DrivetrainRNeedsToBeStopped_Controller1) {      // check if the right motor has already been stopped
           RightDriveSmart.stop();                           // stop the right drive motor
           DrivetrainRNeedsToBeStopped_Controller1 = false;  // tell the code that the right motor has been stopped
@@ -84,14 +97,13 @@ int rc_auto_loop_function_Controller1() {
 
       // FLYWHEEL
       // check the ButtonL2 status to control Flywheel
-      if (Controller1.ButtonL2.pressing() && Flywheel_flag == 0) {
-        Flywheel.spin(forward, FLYWHEEL_VEL, velocityUnits::pct);
-        Flywheel_flag = 1;
+      if (Controller1.ButtonL2.pressing() && isFlywheelRunning == false) {
+        isFlywheelRunning = true;
         wait(400, msec);
       } 
-      else if (Controller1.ButtonL2.pressing() && Flywheel_flag == 1) {
-        Flywheel.stop();
-        Flywheel_flag = 0;
+      else if (Controller1.ButtonL2.pressing() && isFlywheelRunning == true) {
+        isFlywheelRunning = false;
+        Flywheel.stop(brakeType::coast);
         wait(400, msec);
       }
 
