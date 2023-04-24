@@ -1,8 +1,9 @@
 #include "vex.h"
 #include "constants.h"
+
 using namespace vex;
-using signature = vision::signature;
 using code = vision::code;
+using signature = vision::signature;
 
 //---------------------- Devices ----------------------//
 brain  Brain;

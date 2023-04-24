@@ -15,11 +15,6 @@ extern motor FlywheelMotorA;
 extern motor FlywheelMotorB;
 extern inertial DrivetrainInertial;
 
-/**
- * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
- * 
- * This should be called at the start of your int main function.
- */
 extern int rc_auto_loop_function_Controller1();
 void vexcodeInit( void );
 void chassis_control();

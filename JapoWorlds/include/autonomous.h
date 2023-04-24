@@ -1,6 +1,7 @@
 #include <iostream>
-#include "robot-config.h"
 #include "constants.h"
+#include "robot-config.h"
+
 
 using namespace vex;
 extern brain Brain;
@@ -8,12 +9,13 @@ extern brain Brain;
 //------- Aux function definition -------//
 void go_for_roller();
 void shot_two_disks();
-void go_for_three_stack();
-void reset_turnH(double d, double vel);
 void shot_three_disks();
+void go_for_three_stack();
 void go_for_three_square();
+void reset_turnH(double d, double vel);
+void move_to_coordinate(double target_x, double target_y, double target_heading);
 
-//--------- Main auton function ---------//
+//--------- Main auton functions ---------//
 void auton(){
   go_for_roller();
   shot_two_disks();
@@ -22,8 +24,11 @@ void auton(){
   //go_for_three_square();
 }
 
-//------- Aux function filling -------//
+void skills(){
 
+}
+
+//------- Aux function filling -------//
 void go_for_roller(){
   // Move to roller
   Drivetrain.driveFor(directionType::rev, 
@@ -86,7 +91,6 @@ void shot_three_disks(){
   //AQUI LE MOVIMOS ESTABA EN 25 EL STACK VEL
   reset_turnH(TURN_FOR_BAS, TURN_TO_STACK_VEL);   // Aim for the basket
   Intake_roller_group.stop();  
-
   //1st disk
   wait(WAIT_UNTIL_LAUNCH/2.0, msec);
   Indexer.open(); 
@@ -122,3 +126,33 @@ void reset_turnH(double d, double vel){
   Drivetrain.turnToHeading(d, deg, vel, velocityUnits::pct);
 }
 
+void move_to_coordinate(double target_x, double target_y, double target_heading){
+  if (target_x == 0 && target_y != 0){
+    if (target_y > 0){ Drivetrain.driveFor(fwd, target_y, distanceUnits::cm); }
+    if (target_y < 0){ Drivetrain.driveFor(reverse, target_y, distanceUnits::cm); }
+  }
+  if (target_y == 0 && target_x != 0){
+    double ang = 90;
+    if (target_x > 0){ Drivetrain.turnToHeading(ang, rotationUnits::deg); }
+    if (target_x < 0){ Drivetrain.turnToHeading(-ang, rotationUnits::deg); }
+    Drivetrain.driveFor(fwd, target_x, distanceUnits::cm);
+  }
+  if (target_x != 0 && target_y != 0){
+    double ang = atan(target_y / target_x) * 180 / M_PI;
+    double hyp = sqrt(target_x * target_x + target_y * target_y);
+    // 1st quadrant
+    if (target_x > 0 && target_y > 0){ Drivetrain.turnToHeading(ang, rotationUnits::deg); }
+    // 2nd quadrant 
+    if (target_x < 0 && target_y > 0){ Drivetrain.turnToHeading(-ang, rotationUnits::deg); }
+    // 3rd quadrant
+    if (target_x < 0 && target_y < 0){ Drivetrain.turnToHeading(180 - ang, rotationUnits::deg); }
+    // 4th quadrant
+    if (target_x > 0 && target_y < 0){ Drivetrain.turnToHeading(180 + ang, rotationUnits::deg); }
+    Drivetrain.driveFor(hyp, distanceUnits::cm);
+  }
+  DrivetrainInertial.resetHeading();
+  if (target_heading != 0){
+    Drivetrain.turnToHeading(target_heading, rotationUnits::deg);
+  }
+  Drivetrain.stop(brakeType::hold);
+}

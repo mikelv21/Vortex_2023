@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/*    Module:       constants.h                                                  */
+/*    Module:       constants.h                                               */
 /*    Author:       C:\Users\nerij                                            */
 /*    Created:      Wed Apr 19 2023                                           */
 /*    Description:  V5 project                                                */
@@ -25,7 +25,7 @@ const double VEL_FOR_ROLLER      = 60;      //pct
 const double DIST_FOR_TWO_DISKS  = 20;      //cm
 const double VEL_CHASSIS_TWO_D   = 20;      //cm
 const double HEADING_SETPOINT    = -6;      //degrees + is for left
-const double VEL_FOR_HEADING     = 15;       //pct
+const double VEL_FOR_HEADING     = 15;      //pct
 const double FIRST_DISK_VEL      = 86;      //pct
 const double SECOND_DISK_VEL     = 88;      //pct
 
