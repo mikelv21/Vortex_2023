@@ -7,33 +7,36 @@ using namespace vex;
 extern brain Brain;
 
 //------- Aux function definition -------//
-// void go_for_roller();
-// void shot_two_disks();
-// void shot_three_disks();
-// void go_for_three_stack();
-// void go_for_three_square();
-void shoot(int volt, int discs);
-// void reset_turnH(double d, double vel);
+void go_for_roller();
+void shot_two_disks();
+void shot_three_disks();
+void go_for_three_stack();
+void go_for_three_square();
+void reset_turnH(double d, double vel);
 void move_to_coordinate(double target_x, double target_y, double target_heading);
 
 //--------- Main auton functions ---------//
 void auton(){
-  Drivetrain.setDriveVelocity(30, percentUnits::pct);     // Set velocity to 30%
-  move_to_coordinate(0, -8, 0);                           // Go to roller
-  Intake_roller_group.spinFor(fwd, 100, deg, 
-                              60, velocityUnits::pct);    // Move roller
-  move_to_coordinate(0, 10, -10);                         // Aim to basket
-  shoot(12000, 2);                                        // Shoot 2 discs
-  move_to_coordinate(0, 0, -130);                         // Recover position
-  Drivetrain.setDriveVelocity(100, percentUnits::pct);    // Set velocity to 100%
-  Intake_roller_group.spin(reverse, 10, volt);            // Start intake
-  move_to_coordinate(0, -80, 0);                          // Go to push for 3 stack
-  Drivetrain.setDriveVelocity(30, percentUnits::pct);     // Set velocity to 30%
-  move_to_coordinate(0, 12, 0);                           // Return a little bit
-  move_to_coordinate(0, -70, 100);                        // Go to collect discs and aim
-  Intake_roller_group.stop(hold);                         // Stop intake
-  shoot(9000, 3);                                         // Shoot 3 discs
+  Drivetrain.setDriveVelocity(45, velocityUnits::pct);
+  move_to_coordinate(0, -10, 0);     // Go for disc
+  wait(1, sec);
+  move_to_coordinate(0, 5, -180);    // Aim to basket
+  wait(1, sec);
+  move_to_coordinate(0, -15, 0);     // Go for roller
+  wait(1, sec);
+  move_to_coordinate(-120, 60, 66);  // Go for other discs
+  wait(1, sec);
+  move_to_coordinate(0, 60, 0);
   
+  /*
+  move_to_coordinate(0, -80, 0);    // Go to push for 3 stack
+  wait(1, sec);
+  Drivetrain.setDriveVelocity(45, velocityUnits::pct);
+  move_to_coordinate(0, 12, 0);     // Return a little bit
+  wait(1, sec);
+  move_to_coordinate(0, -70, 115);  // Go to collect discs and aim
+  wait(1, sec); */
+
 
   //go_for_roller();
   //shot_two_disks();
@@ -47,7 +50,6 @@ void skills(){
 }
 
 //------- Aux function filling -------//
-/*
 void go_for_roller(){
   // Move to roller
   Drivetrain.driveFor(directionType::rev, 
@@ -144,20 +146,6 @@ void reset_turnH(double d, double vel){
   DrivetrainInertial.calibrate();
   Drivetrain.turnToHeading(d, deg, vel, velocityUnits::pct);
 }
-*/
-
-// ---------------------------------------------------------------------
-void shoot(int volt, int discs){
-  Flywheel.spin(fwd, volt, voltageUnits::mV);
-  wait(WAIT_UNTIL_LAUNCH, msec);
-    for (int i = 0; i < discs; i++){
-    Indexer.open(); 
-    wait(INDEXER_WAIT*1.5, msec);
-    Indexer.close();
-    wait(INDEXER_WAIT*1.5, msec);
-  }
-  Flywheel.stop();
-}
 
 void move_to_coordinate(double target_x, double target_y, double target_heading){
   if (target_x == 0 && target_y != 0){
@@ -182,9 +170,9 @@ void move_to_coordinate(double target_x, double target_y, double target_heading)
     if (target_x > 0 && target_y < 0){ Drivetrain.turnToHeading(180 + ang, rotationUnits::deg); }
     Drivetrain.driveFor(hyp, distanceUnits::cm);
   }
-  DrivetrainInertial.resetHeading();
   if (target_heading != 0){
     Drivetrain.turnToHeading(target_heading, rotationUnits::deg);
   }
+  DrivetrainInertial.resetHeading();
   Drivetrain.stop(brakeType::hold);
 }
