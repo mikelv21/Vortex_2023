@@ -10,11 +10,11 @@
 #include <math.h>
 
 //----------------- Robot constants -----------------//
-const double WHEEL_DIAMETER = 82.55;    //mm
+const double WHEEL_DIAMETER = 101.6;    //mm
 const double WHEEL_TRAVEL   = M_PI * WHEEL_DIAMETER;
-const double TRACK_WIDTH    = 300;      //mm
-const double TRACK_BASE     = 230;      //mm
-const double EXT_GEAR_RATIO = 1.666;    
+const double TRACK_WIDTH    = 385;      //mm
+const double TRACK_BASE     = 330;      //mm
+const double EXT_GEAR_RATIO = 84.0/60.0;    
 
 //----------------- Autonomous time -----------------//
 const double DISTANCE_FOR_ROLLER = 7;       //cm
@@ -49,7 +49,7 @@ const double WAIT_UNTIL_LAUNCH   = 2500;    //ms
 
 //------------------ User control -------------------//
 const double JOYSTICK_DEADBAND    = 5;
-const double CONTROL_FLYWHEEL_VEL = 11000;  //max 12000  (mV, milivolts)  
+const double CONTROL_FLYWHEEL_VEL = 9000;   //max 12000  (mV, milivolts)  
 const double INTAKE_VEL           = 85;
-const double EXPANSOR_DEG         = -90;
+const double EXPANSOR_DEG         = -120;
 const double EXPANSOR_LAUNCH_VEL  = 95;

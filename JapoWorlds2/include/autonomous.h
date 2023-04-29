@@ -15,42 +15,40 @@ void auton(){
   // Movement configurations
   Drivetrain.setTurnConstant(1.0);   // Recommended value 0.8 a 1.2
   Drivetrain.setTurnThreshold(1.0);  // Recommended value 2 a 5 deg
-  
-  Drivetrain.setDriveVelocity(60, velocityUnits::pct);
-  move_to_coordinate(0, -39, 90);              // Go to the roller
-  Drivetrain.setDriveVelocity(30, velocityUnits::pct);
-  move_to_coordinate(0, -6, 0);               // Move to roller
-  wait(1.5, sec);
-  Drivetrain.setDriveVelocity(50, velocityUnits::pct);
-  Intake_roller_group.spinFor(fwd, 180, deg);  // Move roller
-  move_to_coordinate(0, 10, 15);               // Aim to basket
-  shoot(12, 2);                                // Shoot 2 discs
-  move_to_coordinate(0, 0, -15);               // Reset position
-  move_to_coordinate(0, 0, -50);               // Aim to discs
-  // move_to_coordinate(0, 0, -60);               // Reset position and Aim discs
-  move_to_coordinate(0, 25, 180);
-  Intake_roller_group.spin(reverse, 12, volt); // Activate Intake
-  move_to_coordinate(0, -120, -90);            // Collect discs and aim basket
-  Intake_roller_group.stop();                  // Stop Intake
-  shoot(9, 3);                                 // Shoot 3 discs
-  // --- END --- //
+
+  Drivetrain.setDriveVelocity(25, percentUnits::pct);     // Set velocity to 25%
+  move_to_coordinate(0, -8, 0);                           // Go to roller
+  Intake_roller_group.spinFor(fwd, 100, deg, 
+                              60, velocityUnits::pct);    // Move roller
+  move_to_coordinate(0, 25, -10);                         // Aim to basket
+  shoot(12, 2);                                           // Shoot 2 discs
+  move_to_coordinate(0, -15, -130);                       // Recover position
+  Drivetrain.setDriveVelocity(100, percentUnits::pct);    // Set velocity to 100%
+  move_to_coordinate(0, -80, 0);                          // Go to push for 3 stack
+  Drivetrain.setDriveVelocity(30, percentUnits::pct);     // Set velocity to 30%
+  Intake_roller_group.spin(reverse, 10, volt);            // Start intake
+  move_to_coordinate(0, 12, 0);                           // Return a little bit
+  move_to_coordinate(0, -70, 110);                        // Go to collect discs and aim  100 -> 110 ->  
+  Intake_roller_group.stop(hold);                         // Stop intake
+  shoot(8, 3);                                            // Shoot 3 discs
+
+  // move_to_coordinate(0, -30, 50);                         // Go for last 3 discs
+  // Intake_roller_group.spin(reverse, 10, volt);            // Start intake        
+  // move_to_coordinate(0, -70, 0);                          // Get last 3 discs  
 }
 
 void skills(){
-  auton();
 }
 
+// ---------------------------------------------------------------------
 void shoot(int volts, int discs){
-  double temp = WAIT_UNTIL_LAUNCH*2.0;
-
   Flywheel.spin(fwd, volts, voltageUnits::volt);
-  wait(temp, msec);
-  for (int i = 0; i < discs; i++){
+  wait(WAIT_UNTIL_LAUNCH*2.0, msec);
+    for (int i = 0; i < discs; i++){
     Indexer.open(); 
     wait(INDEXER_WAIT*1.5, msec);
     Indexer.close();
     wait(INDEXER_WAIT*1.5, msec);
-    // temp = 0;
   }
   Flywheel.stop();
 }
@@ -78,26 +76,9 @@ void move_to_coordinate(double target_x, double target_y, double target_heading)
     if (target_x > 0 && target_y < 0){ Drivetrain.turnToHeading(180 + ang, rotationUnits::deg); }
     Drivetrain.driveFor(hyp, distanceUnits::cm);
   }
+  DrivetrainInertial.resetHeading();
   if (target_heading != 0){
     Drivetrain.turnToHeading(target_heading, rotationUnits::deg);
   }
-  DrivetrainInertial.resetHeading();
   Drivetrain.stop(brakeType::hold);
 }
-
-/* 
-Record values
- - 45% -> 50% -> 
- - (0, -37, 90)   -> 
- - 15% -> 
- - (0, -14.2, 0)  ->  
- - 45% -> 
- - 180 deg        -> 
- - (0, 13, 15)    -> 
- - 12V, 2 discs   -> 
- - (0, 0, -15)    -> 
- - (0, 0, -45)    -> 
- - 12V ->  
- - (0, -120, -90) -> 
- - 9V, 3 discs    -> 
-*/

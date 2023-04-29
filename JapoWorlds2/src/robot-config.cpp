@@ -8,6 +8,7 @@ using signature = vision::signature;
 //---------------------- Devices ----------------------//
 brain  Brain;
 controller Controller1 = controller(primary);
+
 // Chassis
 inertial DrivetrainInertial = inertial(PORT17);
 motor leftMotorA  = motor(PORT1, ratio18_1, true);
@@ -20,10 +21,12 @@ motor_group LeftDriveSmart  = motor_group(leftMotorA, leftMotorB);
 motor_group RightDriveSmart = motor_group(rightMotorA, rightMotorB);
 smartdrive Drivetrain = smartdrive(LeftDriveSmart, RightDriveSmart, DrivetrainInertial, 
   WHEEL_TRAVEL, TRACK_WIDTH, TRACK_BASE, mm, EXT_GEAR_RATIO);
+
 // Flywheel
 motor FlywheelMotorA = motor(PORT9, ratio18_1, true);
 motor FlywheelMotorB = motor(PORT10, ratio18_1, true);
 motor_group Flywheel = motor_group(FlywheelMotorA, FlywheelMotorB);
+
 // Intake-roller
 motor Intake_roller_A = motor(PORT7, ratio18_1, false);
 motor Intake_roller_B = motor(PORT8, ratio18_1, true);
@@ -31,6 +34,7 @@ motor_group Intake_roller_group = motor_group(Intake_roller_A, Intake_roller_B);
 
 // Piston Indexer
 pneumatics Indexer = pneumatics(Brain.ThreeWirePort.H);
+
 //Expansion
 motor Expansor = motor(PORT11, ratio18_1, false);
  

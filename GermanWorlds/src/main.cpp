@@ -18,6 +18,8 @@ void display_info_dinamic(){
   std::cout << "FWU: " << FlywheelMotorA.temperature(celsius) << std::endl;
   std::cout << "FWD: " << FlywheelMotorB.temperature(celsius)   << std::endl;
   std::cout << "Heading: " << DrivetrainInertial.heading()  << std::endl;
+
+  std::cout << "Chassis Motors: " << Drivetrain.temperature(pct) << "%" << std::endl;
 }
 
 void pre_auton(void) {
